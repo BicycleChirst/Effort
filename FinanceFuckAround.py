@@ -21,7 +21,7 @@ def GetFilename(ticker, statement_type):
 
 def GetTheThing(ticker, statement_type):
     url = "https://www.alphavantage.co/query"
-    headers = {"X-RapidAPI-Key": ","X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com"}
+    headers = {"X-RapidAPI-Key": "0000000", "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com"}
     params={"apikey": "","X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com","symbol":ticker,"function":statement_type,"interval":"5min","output_size":"full","datatype":".csv"}
     return requests.get(url, headers=headers, params=params) # should have timeout
 
@@ -54,7 +54,7 @@ def GetAllThings(forceOverwrite=False):
                 time.sleep(13)
                 # should probably validate the response, in case they sent back a "fuck off you're sending too many requests"
 
-GetAllThings()
+#GetAllThings()
 
 #response = GetTheThing("", default_statementtype)
 #print("plsdontexit")

@@ -94,21 +94,6 @@ def DoTheDan(data):
     process_income_reports(quarterly_reports)
 
 
-Wanted_Keys_BS = ["commonStockSharesOutstanding","retainedEarnings","longTermDebt", "totalAssets","deferredRevenue"]
-
-def Balance_Sheet_Prints(ticker=wanted_names, statement_type=wanted_statements):
-    data = LoadJSON_FromComponents(ticker=ticker, statement_type=statement_type)
-    if statement_type == "BALANCE_SHEET":
-        for report in data["annualReports"]:
-            for key in Wanted_Keys_BS:
-                if key in report:
-                    print(key, ":", report[key])
-
-                
-    
-    
-    
-
 def CalculatePercentages(data):
     Calc_Dict:dict = {}
     base_keyname = data["symbol"] + "_BALANCE_SHEET" + "_annualReports_"
@@ -122,26 +107,45 @@ def CalculatePercentages(data):
             thenumber = int(Rep[fieldOne]) / int(Rep[fieldTwo]) * 100
             return f"{fieldOne} as a percentage of {fieldTwo}: {thenumber:.3f}%"
         print(Balance_Sheet_Prints)
-        #Results.append(AsPercentage())
-        #Results.append(AsPercentage("inventory"))
-        #Results.append(AsPercentage("propertyPlantEquipment"))
-        ##Results.append(AsPercentage("currentDebt", "longTermDebt"))
-        #Results.append(AsPercentage("totalCurrentLiabilities", "totalLiabilities"))
         #Calc_Dict.update({keyname:Results})
-        ##print(Rep["calcs"])
     return Calc_Dict
 
-def CreateCalc(ticker=default_ticker, statement_type=default_statementtype):
-    data = LoadJSON_FromComponents(ticker, statement_type)
-    # the JSON structure for income statements is:
-    # Symbol:str, Annual_Reports:dict, Quarterly_Reports:dict
-    if statement_type == "BALANCE_SHEET":
-        Calcs = CalculatePercentages(data)
-        pprint.pprint(Calcs)
-    if statement_type == "INCOME_STATEMENT":
-        DoTheDan(data)
+Wanted_Keys_IS = ["grossProfit", "netIncome"]
+Wanted_Keys_BS = ["commonStockSharesOutstanding", "retainedEarnings", "longTermDebt", "totalAssets", "deferredRevenue"]
 
-#CreateCalc("CCJ", "BALANCE_SHEET")
+# the JSON structure for income statements is:
+# Symbol:str, Annual_Reports:list[dict], Quarterly_Reports:list[dict]
+# the reports are lists where each entry represents the data for that year / quarter
+
+def PrintKeys(ticker=default_ticker, statement_type=default_statementtype):
+    data = LoadJSON_FromComponents(ticker, statement_type)
+    if statement_type == "BALANCE_SHEET":
+        for report in data["annualReports"]:
+            print(report["fiscalDateEnding"])
+            for key in Wanted_Keys_BS:
+                value = report[key]
+                print(f"{key} : {value}")
+        print('\n')
+    if statement_type == "INCOME_STATEMENT":
+        for report in data["annualReports"]:
+            print(report["fiscalDateEnding"])
+            for key in Wanted_Keys_IS:
+                value = report[key]
+                print(f"{key} : {value}")
+        print('\n')
+
+
+# it's actuallly easier to just print everything
+def PrintAllKeys(ticker, statement_type):
+    data = LoadJSON_FromComponents(ticker, statement_type)
+    for report in data["annualReports"]:
+        for key, value in report.items():
+            print(f"{key} : {value}")
+        print('\n')
+
+PrintKeys("NVDA")
+PrintKeys("MSFT", "BALANCE_SHEET")
+PrintAllKeys("CCJ", "INCOME_STATEMENT")
 
 def CreateAllCalcs():
     for f in LOADED_FILES:
@@ -155,4 +159,4 @@ def CreateAllCalcs():
         if f.endswith("INCOME_STATEMENT.txt"):
             DoTheDan(data)
 
-CreateAllCalcs()
+#CreateAllCalcs()
