@@ -94,21 +94,6 @@ def DoTheDan(data):
     process_income_reports(quarterly_reports)
 
 
-def CalculatePercentages(data):
-    Calc_Dict:dict = {}
-    base_keyname = data["symbol"] + "_BALANCE_SHEET" + "_annualReports_"
-    for Rep in data["annualReports"]:
-        keyname = base_keyname + Rep["fiscalDateEnding"]
-        Results = []
-        
-        def AsPercentage(fieldOne="totalCurrentAssets", fieldTwo="totalAssets"):
-            if int(Rep[fieldTwo]) == 0:
-                return "Division By Zero"
-            thenumber = int(Rep[fieldOne]) / int(Rep[fieldTwo]) * 100
-            return f"{fieldOne} as a percentage of {fieldTwo}: {thenumber:.3f}%"
-        print(Balance_Sheet_Prints)
-        #Calc_Dict.update({keyname:Results})
-    return Calc_Dict
 
 Wanted_Keys_IS = ["grossProfit", "netIncome"]
 Wanted_Keys_BS = ["commonStockSharesOutstanding", "retainedEarnings", "longTermDebt", "totalAssets", "deferredRevenue"]
@@ -121,18 +106,32 @@ def PrintKeys(ticker=default_ticker, statement_type=default_statementtype):
     data = LoadJSON_FromComponents(ticker, statement_type)
     if statement_type == "BALANCE_SHEET":
         for report in data["annualReports"]:
+            print("-" * 55)
             print(report["fiscalDateEnding"])
             for key in Wanted_Keys_BS:
                 value = report[key]
-                print(f"{key} : {value}")
+                try:
+                    numeric_value = float(value)
+                    formatted_value = '{:,.2f}'.format(numeric_value)
+                except ValueError:
+                    formatted_value = value
+                print(f"{key} : {formatted_value}")
         print('\n')
     if statement_type == "INCOME_STATEMENT":
         for report in data["annualReports"]:
+            print("-" * 55)
             print(report["fiscalDateEnding"])
             for key in Wanted_Keys_IS:
                 value = report[key]
-                print(f"{key} : {value}")
+                try:
+                    numeric_value = float(value)
+                    formatted_value = '{:,.2f}'.format(numeric_value)
+                except ValueError:
+                    formatted_value = value
+                print(f"{key} : {formatted_value}")
         print('\n')
+
+
 
 
 # it's actuallly easier to just print everything
@@ -140,8 +139,21 @@ def PrintAllKeys(ticker, statement_type):
     data = LoadJSON_FromComponents(ticker, statement_type)
     for report in data["annualReports"]:
         for key, value in report.items():
-            print(f"{key} : {value}")
+            if isinstance(value, (int, float)):
+                formatted_value = '{:,.2f}'.format(value) if value >= 0 else '-{:,.2f}'.format(abs(value))
+            elif isinstance(value, str):
+                if value.replace(',', '').replace('.', '', 1).isdigit() or (value.startswith('-') and value[1:].replace(',', '').replace('.', '', 1).isdigit()):
+                    formatted_value = '{:,.2f}'.format(float(value)) if '.' in value else '{:,}'.format(int(value))
+                else:
+                    formatted_value = value
+            else:
+                formatted_value = value
+            print(f"{key} : {formatted_value}")
         print('\n')
+
+
+
+
 
 PrintKeys("NVDA")
 PrintKeys("MSFT", "BALANCE_SHEET")
