@@ -94,6 +94,21 @@ def DoTheDan(data):
     process_income_reports(quarterly_reports)
 
 
+def CalculatePercentages(data):
+    Calc_Dict:dict = {}
+    base_keyname = data["symbol"] + "_BALANCE_SHEET" + "_annualReports_"
+    for Rep in data["annualReports"]:
+        keyname = base_keyname + Rep["fiscalDateEnding"]
+        Results = []
+        
+        def AsPercentage(fieldOne="totalCurrentAssets", fieldTwo="totalAssets"):
+            if int(Rep[fieldTwo]) == 0:
+                return "Division By Zero"
+            thenumber = int(Rep[fieldOne]) / int(Rep[fieldTwo]) * 100
+            return f"{fieldOne} as a percentage of {fieldTwo}: {thenumber:.3f}%"
+        print(Balance_Sheet_Prints)
+        #Calc_Dict.update({keyname:Results})
+    return Calc_Dict
 
 Wanted_Keys_IS = ["grossProfit", "netIncome"]
 Wanted_Keys_BS = ["commonStockSharesOutstanding", "retainedEarnings", "longTermDebt", "totalAssets", "deferredRevenue"]
