@@ -1,3 +1,7 @@
 __pycache__
 API_tokens.txt
 *API*
+.idea
+.venv
+*venv*
+DownloadedStatements
