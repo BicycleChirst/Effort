@@ -1,66 +1,37 @@
-import json
-import pprint
 from FinanceFuckAround import *
 
-GlobNames = list(pathlib.Path('./PyFinDump').glob('*.txt'))
-EveryFile = []
-for f in GlobNames:
-    EveryFile.append(str(f))
+WantedKeys = {
+    "INCOME_STATEMENT" : ["grossProfit", "netIncome"],
+    "BALANCE_SHEET" : ["commonStockSharesOutstanding", "retainedEarnings", "longTermDebt", "totalAssets", "deferredRevenue"]
+}
 
-CalcFolder = pathlib.Path('./PyFinCalcs/')
+## these maps are laid out as denominator : list[numberator]
+WantedPercentages = {
+    "BALANCE_SHEET" : {
+        "totalAssets" : ["totalCurrentAssets", "inventory", "propertyPlantEquipment",],
+        "longTermDebt" : ["currentDebt",],
+        "totalLiabilities" : ["totalCurrentLiabilities",],
+    },
+    "INCOME_STATEMENT" : {
+        "totalRevenue" : ["grossProfit", "operatingExpenses",],
+        "incomeBeforeTax" : ["incomeTaxExpense",],
+    },
+    "CASH_FLOW" : {
+        "operatingCashflow" : ["netIncome",],
+    },
+}
+
+KeyFormattingExcluded = ["fiscalDateEnding", "reportedCurrency"]
+
 
 def OutputName(ticker, statement_type):
     name = f"{ticker}_{statement_type}_calc.txt"
     calcpath = str(CalcFolder) + name
     return calcpath
 
-def process_income_reports(reports):
-    for report in reports:
-        fiscal_date_ending = report['fiscalDateEnding']
-        gross_profit = report['grossProfit']
-        total_revenue = report['totalRevenue']
-        cost_of_revenue = report['costOfRevenue']
-        cost_of_Goods_And_Services_Sold = report['costofGoodsAndServicesSold']
-        operating_Income = report['operatingIncome']
-        SGA = report['sellingGeneralAndAdministrative']
-        researchAndDevelopment = report['researchAndDevelopment']
-        OpEx = report['operatingExpenses']
-        investment_income_Net = report['investmentIncomeNet']
-        net_Interest_Income = report['netInterestIncome']
-        interest_Income = report['interestIncome']
-        interest_Expense = report['interestExpense']
-        non_Interest_Income = report['nonInterestIncome']
-        other_Non_Operating_Income = report['otherNonOperatingIncome']
-        depreciation = report['depreciation']
-        depreciation_And_Amortization = report['depreciationAndAmortization']
-        income_Before_Tax = report['incomeBeforeTax']
-        income_Tax_Expense = report['incomeTaxExpense']
-        interest_And_Debt_Expense = report['interestAndDebtExpense']
-        net_Income_From_Continuing_Operation = report['netIncomeFromContinuingOperations']
-        comprehensive_Income_Net_Of_Tax = report['comprehensiveIncomeNetOfTax']
-        ebit = report['ebit']
-        ebitda = report['ebitda']
-        net_Income = report['netIncome']
-        #gross_profit_int = int(gross_profit.replace(',', ''))
-        #total_revenue_int = int(total_revenue.replace(',', ''))
-        gross_margin = int(gross_profit.replace(',', '')) / int(total_revenue.replace(',', ''))
-        print(f"=== {fiscal_date_ending} ===")
-        #print("\n")
-        #print(f"Gross Profit: {format(int(gross_profit), ',')}") # doesn't work for some reason
-        print(f"Gross Profit: {gross_profit}")
-        print(f"Net Income: {format(float(net_Income), ',')}")
-        print(f"Total Revenue: {format(int(total_revenue), ',')}")
-        print(f"Gross Margin: {gross_margin:.2f}")
-        
-        #print("all:\n")
-        #pprint.pprint(report)
-        
-        print("\n")
-
 def LoadJSON_FromComponents(ticker=default_ticker, statement_type=default_statementtype):
     filename = GetFilename(ticker, statement_type)
     print("loading JSON from: ", filename)
-    #with open(f"PyFinDump/{ticker}_INCOME_STATEMENT.txt") as file:
     with open(filename) as file:
         data = json.load(file)
     return data
@@ -71,119 +42,66 @@ def LoadJSON_FromFilename(theFilename):
         data = json.load(file)
     return data
 
-def DoTheDan(data):
-    theTicker = data['symbol']
-    # Access the annualReports field and process the data
-    annual_reports = data['annualReports']
-    
-    print("\n")
-    print("-" * 55)
-    print("\t\tANNUAL_REPORTS:", theTicker)
-    print("-" * 55)
-    #print("\n")
-    process_income_reports(annual_reports)
-    
-    #print("\n\n")
-    
-    # Access the quarterlyReports field and process the data
-    quarterly_reports = data['quarterlyReports']
-    print("-" * 55)
-    print("\t\tQUARTELY_REPORTS:", theTicker)
-    print("-" * 55)
-    #print("\n")
-    process_income_reports(quarterly_reports)
-
-
-def CalculatePercentages(data):
-    Calc_Dict:dict = {}
-    base_keyname = data["symbol"] + "_BALANCE_SHEET" + "_annualReports_"
-    for Rep in data["annualReports"]:
-        keyname = base_keyname + Rep["fiscalDateEnding"]
-        Results = []
-        
-        def AsPercentage(fieldOne="totalCurrentAssets", fieldTwo="totalAssets"):
-            if int(Rep[fieldTwo]) == 0:
-                return "Division By Zero"
-            thenumber = int(Rep[fieldOne]) / int(Rep[fieldTwo]) * 100
-            return f"{fieldOne} as a percentage of {fieldTwo}: {thenumber:.3f}%"
-        print(Balance_Sheet_Prints)
-        #Calc_Dict.update({keyname:Results})
-    return Calc_Dict
-
-Wanted_Keys_IS = ["grossProfit", "netIncome"]
-Wanted_Keys_BS = ["commonStockSharesOutstanding", "retainedEarnings", "longTermDebt", "totalAssets", "deferredRevenue"]
-
 # the JSON structure for income statements is:
 # Symbol:str, Annual_Reports:list[dict], Quarterly_Reports:list[dict]
 # the reports are lists where each entry represents the data for that year / quarter
 
 def PrintKeys(ticker=default_ticker, statement_type=default_statementtype):
     data = LoadJSON_FromComponents(ticker, statement_type)
-    if statement_type == "BALANCE_SHEET":
-        for report in data["annualReports"]:
-            print("-" * 55)
-            print(report["fiscalDateEnding"])
-            for key in Wanted_Keys_BS:
-                value = report[key]
-                try:
-                    numeric_value = float(value)
-                    formatted_value = '{:,.2f}'.format(numeric_value)
-                except ValueError:
-                    formatted_value = value
-                print(f"{key} : {formatted_value}")
-        print('\n')
-    if statement_type == "INCOME_STATEMENT":
-        for report in data["annualReports"]:
-            print("-" * 55)
-            print(report["fiscalDateEnding"])
-            for key in Wanted_Keys_IS:
-                value = report[key]
-                try:
-                    numeric_value = float(value)
-                    formatted_value = '{:,.2f}'.format(numeric_value)
-                except ValueError:
-                    formatted_value = value
-                print(f"{key} : {formatted_value}")
-        print('\n')
-
-
-
+    wanted = WantedKeys.setdefault(statement_type, [])
+    if len(wanted) == 0: return
+    print("-" * 55)
+    for report in data["annualReports"]:
+        print(report["fiscalDateEnding"])
+        for key in wanted:
+            value = report[key]
+            if value == "None" : print(f"{key} : ${0}")
+            else: print(f"{key} : ${'{:,.2f}'.format(int(value))}")
+    print('\n')
 
 # it's actuallly easier to just print everything
 def PrintAllKeys(ticker, statement_type):
     data = LoadJSON_FromComponents(ticker, statement_type)
     for report in data["annualReports"]:
         for key, value in report.items():
-            if isinstance(value, (int, float)):
-                formatted_value = '{:,.2f}'.format(value) if value >= 0 else '-{:,.2f}'.format(abs(value))
-            elif isinstance(value, str):
-                if value.replace(',', '').replace('.', '', 1).isdigit() or (value.startswith('-') and value[1:].replace(',', '').replace('.', '', 1).isdigit()):
-                    formatted_value = '{:,.2f}'.format(float(value)) if '.' in value else '{:,}'.format(int(value))
-                else:
-                    formatted_value = value
-            else:
-                formatted_value = value
-            print(f"{key} : {formatted_value}")
+            if key in KeyFormattingExcluded: print(f"{key} : {value}"); continue;
+            if value == "None": print(f"{key} : ${0}"); continue;
+            print(f"{key} : ${'{:,.2f}'.format(int(value))}")
         print('\n')
 
+def CalculatePercentages(data):
+    Calc_Dict:dict = {}
+    dictname = data["symbol"] + "_" + data["StatementType"] + "_annualReports"
+    Calc_Dict.update({"dictname" : dictname})
+    ToCalc = WantedPercentages[data["StatementType"]]
+    if len(ToCalc) == 0 : return
+    for Rep in data["annualReports"]:
+        Results = []
+        def AsPercentage(fieldOne, fieldTwo):
+            if Rep[fieldOne] == "None" or Rep[fieldTwo] == "None":
+                return "None"
+            thenumber = float(Rep[fieldOne]) / float(Rep[fieldTwo]) * 100
+            return f"{fieldOne} = {thenumber:.3f}% of {fieldTwo}"
+        for denominator, FieldOneList in ToCalc.items():
+            for FieldOne in FieldOneList:
+                Results.append(AsPercentage(FieldOne, denominator))
+        Calc_Dict.update({Rep["fiscalDateEnding"] : Results})
+    return Calc_Dict
 
-
+def CreateCalcsFor(tickersToUse):
+    for T in tickersToUse:
+        filenames = TickerMap[T]
+        for N in filenames:
+            data = LOADED_FILES[N]
+            print(N)
+            Calcs = CalculatePercentages(data)
+            pprint.pprint(Calcs)
+            print('\n')
 
 
 PrintKeys("NVDA")
 PrintKeys("MSFT", "BALANCE_SHEET")
-PrintAllKeys("CCJ", "INCOME_STATEMENT")
+PrintAllKeys("AMD", "INCOME_STATEMENT")
 
-def CreateAllCalcs():
-    for f in LOADED_FILES:
-        data = LoadJSON_FromFilename(f)
-        # the JSON structure for income statements is:
-        # Symbol:str, Annual_Reports:dict, Quarterly_Reports:dict
-        if f.endswith("BALANCE_SHEET.txt"):
-            Calcs = CalculatePercentages(data)
-            pprint.pprint(Calcs)
-            pprint.pprint(Balance_Sheet_Prints)
-        if f.endswith("INCOME_STATEMENT.txt"):
-            DoTheDan(data)
-
-#CreateAllCalcs()
+wanted_calcs = ["MSFT", "NVDA", "EXTR"]
+CreateCalcsFor(wanted_calcs)
