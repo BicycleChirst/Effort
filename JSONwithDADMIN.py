@@ -23,6 +23,7 @@ WantedPercentages = {
 
 KeyFormattingExcluded = ["fiscalDateEnding", "reportedCurrency"]
 
+ReportingPeriod = "annualReports"
 
 def OutputName(ticker, statement_type):
     name = f"{ticker}_{statement_type}_calc.txt"
@@ -68,6 +69,16 @@ def PrintAllKeys(ticker, statement_type):
             if value == "None": print(f"{key} : ${0}"); continue;
             print(f"{key} : ${'{:,.2f}'.format(int(value))}")
         print('\n')
+
+def FormatJSON(thejson):
+    newjson = []
+    for report in thejson[ReportingPeriod]:
+        for key, value in report.items():
+            if key in KeyFormattingExcluded: newjson.append(f"{key} : {value}"); continue;
+            if value == "None": newjson.append(f"{key} : ${0}"); continue;
+            newjson.append(f"{key} : ${'{:,.2f}'.format(int(value))}")
+        newjson.append("-" * 93)
+    return newjson
 
 def CalculatePercentages(data):
     Calc_Dict:dict = {}

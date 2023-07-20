@@ -3,26 +3,25 @@ from tkinter import StringVar
 from tkinter.ttk import OptionMenu
 import json
 import pathlib
-from FinanceFuckAround import *
+from JSONwithDADMIN import *
 
 
 def retrieve_and_display_data():
+    import JSONwithDADMIN
     ticker = ticker_entry.get()  # Get the ticker from the entry field
     statement_type = statement_type_var.get()  # Get the selected statement type from the dropdown
+    JSONwithDADMIN.ReportingPeriod = report_type_var.get()
 
     # Download data if it doesn't exist already
-    filename = GetFilename(ticker, statement_type)
-    if not pathlib.Path(filename).exists():
-        data = DownloadFile(ticker, statement_type)
-    else:
-        # Load the data if it exists
-        with open(filename) as file:
-            data = json.load(file)
+    filename = ticker + "_" + statement_type
+    if not filename in LOADED_FILES:
+        print("don't have that file")
+        return
+    data = LOADED_FILES[filename]
 
     # Display the data in the text widget
     data_text.delete(1.0, gui.END)  # Clear any existing data in the text widget
-    data_text.insert(gui.END, json.dumps(data, indent=4))
-
+    data_text.insert(gui.END, json.dumps(FormatJSON(data), indent=4))
 
 app = gui.Tk()
 app.title("Visualized Effort")
@@ -41,6 +40,11 @@ statement_type_var.set("INCOME_STATEMENT")  # Default value for the dropdown
 # listing it twice as a jank-ass workaround to prevent "INCOME_STATEMENT" from disappearing from the drop-down
 statement_type_menu = OptionMenu(app, statement_type_var, "INCOME_STATEMENT", "INCOME_STATEMENT", "BALANCE_SHEET", "CASH_FLOW")
 statement_type_menu.pack()
+
+report_type_var = StringVar(app)
+report_type_var.set("annualReports")  # Default value for the dropdown
+report_type_menu = OptionMenu(app, report_type_var, "annualReports", "annualReports", "quarterlyReports")
+report_type_menu.pack()
 
 retrieve_button = gui.Button(app, text="Retrieve and Display Data", command=retrieve_and_display_data)
 retrieve_button.pack()

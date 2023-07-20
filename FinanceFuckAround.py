@@ -20,7 +20,7 @@ CalcFolder = pathlib.Path('./PyFinCalcs/') # location to save calculated stats
 default_ticker = "CCJ"
 default_statementtype = "INCOME_STATEMENT"
 
-wanted_tickers = ["CCJ","EH"]
+wanted_tickers = ["CCJ","EH", "ACOR"]
 wanted_statements = ["INCOME_STATEMENT", "BALANCE_SHEET"]
 
 # dict: {filename: json}
@@ -116,7 +116,7 @@ def DownloadEverything(forceOverwrite=False):
                 #if response.status_code == (403): print ("go fuck yourself")
                 #if response.status_code == (200): print ("Nice effort")
 
-#DownloadEverything()
+DownloadEverything()
 LoadAllFiles()
 print("Loaded Statements: ")
 PrintJSON(StatementMap)
