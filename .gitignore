@@ -5,3 +5,5 @@ API_tokens.txt
 .venv
 *venv*
 DownloadedStatements
+imgui.ini
+HowToSetup.txt
