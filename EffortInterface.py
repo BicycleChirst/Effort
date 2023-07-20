@@ -37,4 +37,6 @@ retrieve_button.pack()
 data_text = gui.Text(app, width=80, height=30)
 data_text.pack()
 
-app.mainloop()
+# only open the gui if the file this run directly
+if __name__ == "__main__":
+    app.mainloop()
