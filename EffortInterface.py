@@ -22,10 +22,7 @@ def retrieve_and_display_data():
     data_text.delete(1.0, gui.END)  # Clear any existing data in the text widget
     data_text.insert(gui.END, json.dumps(data, indent=4))
 
-        
-        
-        
-        
+
 def download_data():
     ticker = download_ticker_entry.get()
     statement_type= download_statement_type_entry.get()
@@ -47,7 +44,8 @@ statement_type_label.pack()
 
 statement_type_var = StringVar(app)
 statement_type_var.set("INCOME_STATEMENT")  # Default value for the dropdown
-statement_type_menu = OptionMenu(app, statement_type_var, "INCOME_STATEMENT", "BALANCE_SHEET", "CASH_FLOW")
+# listing it twice as a jank-ass workaround to prevent "INCOME_STATEMENT" from disappearing from the drop-down
+statement_type_menu = OptionMenu(app, statement_type_var, "INCOME_STATEMENT", "INCOME_STATEMENT", "BALANCE_SHEET", "CASH_FLOW")
 statement_type_menu.pack()
 
 retrieve_button = gui.Button(app, text="Retrieve and Display Data", command=retrieve_and_display_data)
