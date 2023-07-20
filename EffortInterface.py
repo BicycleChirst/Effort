@@ -14,9 +14,10 @@ def retrieve_and_display_data():
 
     # Download data if it doesn't exist already
     filename = ticker + "_" + statement_type
-    if not filename in LOADED_FILES:
+    if filename not in LOADED_FILES:
         print("don't have that file")
-        return
+        DownloadFile(ticker, statement_type)
+        LoadAllFiles()
     data = LOADED_FILES[filename]
 
     # Display the data in the text widget

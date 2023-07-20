@@ -89,6 +89,16 @@ def DownloadFile(ticker=default_ticker, statement_type=default_statementtype):
     params={"apikey": f"{ALPHAVANTAGE_TOKEN}","X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com","symbol":ticker,"function":statement_type,"interval":"5min","output_size":"full","datatype":".csv"} # should have timeout
     response = requests.get(url, headers=headers, params=params)
     
+    match response.status_code:
+        case 200: pass # OK
+        case 404 | 403 | _ : print ("Alphavantage said go fuck yourself"); return;
+
+    try:
+        response.json()["symbol"]
+    except KeyError:
+        print("Alphavantage sent a bullshit response")
+        return
+    
     niceoutput = json.dumps(response.json(), indent=4)
     filename = GetFilename(ticker, statement_type)
     with open(filename, mode='w', encoding="utf-8") as thefile:
