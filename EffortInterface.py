@@ -34,7 +34,7 @@ statement_type_entry.pack()
 retrieve_button = gui.Button(app, text="Retrieve and Display Data", command=retrieve_and_display_data)
 retrieve_button.pack()
 
-data_text = gui.Text(app, width=80, height=30)
+data_text = gui.Text(app, width=80, height=50)
 data_text.pack()
 
 app.mainloop()

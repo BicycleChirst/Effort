@@ -43,15 +43,20 @@ def LoadAllFiles(subdir=Dumpfolder):
         filename = F.name.removesuffix('.txt')
         print(f"loading: {str(filename)}")
         with F.open(mode="r", encoding="utf-8") as thefile:
-            thejson = json.load(thefile)  # look into the 'parse_int/float' arguments
-            symbol = thejson['symbol']
-            ST = filename.removeprefix(f"{symbol}_")
-            thejson.update({'StatementType' : ST}) # inserting this info to make things easier
-            LOADED_FILES.update({filename : thejson})
-            TickerMap.setdefault(symbol, []).append(filename)
-            StatementMap.setdefault(symbol, []).append(ST)
+            try:
+                thejson = json.load(thefile)  # look into the 'parse_int/float' arguments
+                symbol = thejson['symbol']
+                ST = filename.removeprefix(f"{symbol}_")
+                thejson.update({'StatementType': ST})  # inserting this info to make things easier
+                LOADED_FILES.update({filename: thejson})
+                TickerMap.setdefault(symbol, []).append(filename)
+                StatementMap.setdefault(symbol, []).append(ST)
+            except KeyError as e:
+                print(f"Error processing {filename}: {e}")
+                continue
     print('\n')
     return
+
 
 def MoveJsonFiles():
     NewFolder = pathlib.Path('./DownloadedStatements')
