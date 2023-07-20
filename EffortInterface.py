@@ -5,6 +5,7 @@ import json
 import pathlib
 from FinanceFuckAround import *
 
+
 def retrieve_and_display_data():
     ticker = ticker_entry.get()  # Get the ticker from the entry field
     statement_type = statement_type_var.get()  # Get the selected statement type from the dropdown
@@ -21,13 +22,6 @@ def retrieve_and_display_data():
     # Display the data in the text widget
     data_text.delete(1.0, gui.END)  # Clear any existing data in the text widget
     data_text.insert(gui.END, json.dumps(data, indent=4))
-
-
-def download_data():
-    ticker = download_ticker_entry.get()
-    statement_type= download_statement_type_entry.get()
-    
-    DownloadFile(ticker,statement_type)
 
 
 app = gui.Tk()

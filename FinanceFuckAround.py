@@ -2,6 +2,7 @@ import requests
 import json
 import pathlib
 import time
+from API_tokens import ALPHAVANTAGE_TOKEN
 
 import pprint
 JSON_Printer = pprint.PrettyPrinter(indent=4, width=120, compact=False)
@@ -84,8 +85,8 @@ def MoveJsonFiles():
 
 def DownloadFile(ticker=default_ticker, statement_type=default_statementtype):
     url = "https://www.alphavantage.co/query"
-    headers = {"X-RapidAPI-Key": "", "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com"}
-    params={"apikey": "","X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com","symbol":ticker,"function":statement_type,"interval":"5min","output_size":"full","datatype":".csv"} # should have timeout
+    headers = {"X-RapidAPI-Key": f"{ALPHAVANTAGE_TOKEN}", "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com"}
+    params={"apikey": f"{ALPHAVANTAGE_TOKEN}","X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com","symbol":ticker,"function":statement_type,"interval":"5min","output_size":"full","datatype":".csv"} # should have timeout
     response = requests.get(url, headers=headers, params=params)
     
     niceoutput = json.dumps(response.json(), indent=4)

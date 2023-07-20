@@ -1,5 +1,6 @@
 __pycache__
 API_tokens.txt
+API_tokens.py
 *API*
 .idea
 .venv
