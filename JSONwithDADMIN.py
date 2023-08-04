@@ -1,4 +1,4 @@
-from FinanceFuckAround import *
+from EffortEngine import *
 
 WantedKeys = {
     "INCOME_STATEMENT" : ["grossProfit", "netIncome"],

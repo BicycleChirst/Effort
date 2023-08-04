@@ -1,0 +1,84 @@
+    Treasury Bond rates
+        Series ID: GS 30/10/2
+
+    Gross Domestic Product (GDP):
+        Series ID: GDP
+        Description: Gross Domestic Product
+
+    Consumer Price Index (CPI):
+        Series ID: CPIAUCSL
+        Description: All Items Consumer Price Index for All Urban Consumers (CPI-U)
+
+    Unemployment Rate:
+        Series ID: UNRATE
+        Description: Civilian Unemployment Rate
+
+    Interest Rates:
+        Series ID: DGS10
+        Description: 10-Year Treasury Constant Maturity Rate
+
+    Stock Market Indices:
+        Series ID: SP500
+        Description: S&P 500 Index
+
+    Housing Starts:
+        Series ID: HOUST
+        Description: Housing Starts: Total: New Privately Owned Housing Units Started
+
+    Industrial Production:
+        Series ID: INDPRO
+        Description: Industrial Production Index
+
+    Retail Sales:
+        Series ID: RSAFS
+        Description: Advance Retail Sales: Retail and Food Services, Total
+
+    Personal Income:
+        Series ID: PI
+        Description: Personal Income
+
+    Durable Goods Orders:
+        Series ID: DGORDER
+        Description: Manufacturers' New Orders: Durable Goods
+
+        Consumer Confidence Index (CCI):
+        Series ID: UMCSENT
+        Description: University of Michigan: Consumer Sentiment
+
+    Initial Jobless Claims:
+        Series ID: ICSA
+        Description: Initial Claims
+
+    Labor Force Participation Rate:
+        Series ID: CIVPART
+        Description: Civilian Labor Force Participation Rate
+
+    Producer Price Index (PPI):
+        Series ID: PPIACO
+        Description: Producer Price Index by Commodity for All Commodities
+
+    Real Gross Domestic Product (GDP):
+        Series ID: GDPC1
+        Description: Real Gross Domestic Product
+
+    Business Inventories:
+        Series ID: BUSINV
+        Description: Total Business Inventories
+
+    Consumer Credit:
+        Series ID: TOTALSL
+        Description: Total Consumer Credit Owned and Securitized, Outstanding
+
+    Capacity Utilization Rate:
+        Series ID: TCU
+        Description: Total Industry: Capacity Utilization Rate
+
+    Trade Balance:
+        Series ID: NETEXP
+        Description: Net Exports of Goods and Services
+
+    Average Hourly Earnings:
+        Series ID: CES0500000003
+        Description: All Employees: Total Private: Average Hourly Earnings
+
+
