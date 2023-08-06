@@ -57,14 +57,4 @@ def get_series_data(series_id, start_date, end_date):
     data_list = get_data(endpoint, params)
     return data_list
 
-if __name__ == "__main__":
-    series_id = input("Enter the series ID (e.g., UNRATE, GS10): ")
-    start_date = input("Enter the start date (YYYY-MM-DD): ")
-    end_date = input("Enter the end date (YYYY-MM-DD): ")
-
-    key_indicators_data = get_series_data(series_id, start_date, end_date)
-
-    if key_indicators_data:
-        print("\nData retrieved from FRED:")
-        display_data(key_indicators_data)
 

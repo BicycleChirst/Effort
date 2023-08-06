@@ -1,11 +1,21 @@
-    Treasury Bond rates
-        Series ID: GS 30/10/2
 
-    Gross Domestic Product (GDP):
+    2 Year T-Bill:
+        Series ID: GS2
+        Description: 2 Year Treasury Bill interest rate
+
+    10 Year Treasury Bond:
+        Series ID: GS10
+        Description: 10 Year Treasury Bond interest rate
+
+    30 Year Treasury Bond:
+        Series ID: GS30
+        Description: 30 year Treasury Bond interest rate
+
+    Gross Domestic Product:
         Series ID: GDP
         Description: Gross Domestic Product
 
-    Consumer Price Index (CPI):
+    Consumer Price Index:
         Series ID: CPIAUCSL
         Description: All Items Consumer Price Index for All Urban Consumers (CPI-U)
 
@@ -41,7 +51,7 @@
         Series ID: DGORDER
         Description: Manufacturers' New Orders: Durable Goods
 
-        Consumer Confidence Index (CCI):
+        Consumer Confidence Index:
         Series ID: UMCSENT
         Description: University of Michigan: Consumer Sentiment
 
@@ -53,11 +63,11 @@
         Series ID: CIVPART
         Description: Civilian Labor Force Participation Rate
 
-    Producer Price Index (PPI):
+    Producer Price Index:
         Series ID: PPIACO
         Description: Producer Price Index by Commodity for All Commodities
 
-    Real Gross Domestic Product (GDP):
+    Real Gross Domestic Product:
         Series ID: GDPC1
         Description: Real Gross Domestic Product
 
