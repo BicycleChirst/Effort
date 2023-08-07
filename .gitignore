@@ -3,6 +3,7 @@ API_tokens.txt
 API_tokens.py
 *API*
 .idea
+.run
 .venv
 *venv*
 DownloadedStatements

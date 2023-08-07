@@ -5,9 +5,12 @@ import tkinter
 import tkinter.ttk
 import json
 import pathlib
+
+import Plotski
 from JSONwithDADMIN import *
 from FedGiveIt import *
 
+from Plotski import *
 
 def retrieve_and_display_data():
     import JSONwithDADMIN
@@ -28,10 +31,7 @@ def retrieve_and_display_data():
     data_text.insert(tkinter.END, json.dumps(FormatJSON(data), indent=4))
 
 
-fredrequests_history = []
-
-
-def retrieve_and_display_fred_data():
+def retrieve_fred_data():
     Get_Fred_Inputs()
     print("entry values: ")
     print(series_id_var.get())
@@ -42,24 +42,22 @@ def retrieve_and_display_fred_data():
     print(fred_end_date_input)
 
     # Call the FRED data retrieval function
-    # key_indicators_data = get_series_data(fred_series_id_input, fred_start_date_input, fred_end_date_input)
     key_indicators_data = get_series_data(series_id_var.get(), start_date_entry.get(), end_date_entry.get())
+    return key_indicators_data
 
+def display_fred_data(some_data):
     # Display the data in the FRED text widget
     fred_data_text.delete(1.0, tkinter.END)  # Clear any existing data in the text widget
 
-    if key_indicators_data:
+    if some_data:
         fred_data_text.insert(tkinter.END, "Date\t\t\t\t\t\tValue\n")
         fred_data_text.insert(tkinter.END, "----------------------------------------------------\n")
-        for data in key_indicators_data:
-            #date = data['date']
-            #value = data['value'].ljust(25)
+        for data in some_data:
+            # date = data['date']
+            # value = data['value'].ljust(25)
             fred_data_text.insert(tkinter.END, f"{data['date']}\t\t\t\t\t\t{data['value']}\n")
     else:
         fred_data_text.insert(tkinter.END, "No data available.")
-
-    fredrequests_history.append(key_indicators_data)
-
 
 def read_fred_series_ids(filename):
     with open(filename, "r") as f:
@@ -145,8 +143,17 @@ end_date_label.pack()
 end_date_entry = tkinter.Entry(fred_data_frame)
 end_date_entry.pack()
 
+def retrieve_and_display_fred_data():
+    new_data = retrieve_fred_data()
+    display_fred_data(new_data)
+    # add series id to data
+    Plotski.fredrequests_history.append([series_id_var.get(), new_data])
+
 retrieve_fred_data_button = tkinter.Button(fred_data_frame, text="Retrieve and Display FRED Data", command=retrieve_and_display_fred_data)
 retrieve_fred_data_button.pack()
+
+plotski_button = tkinter.Button(fred_data_frame, text="Plotski", command=plot_fred_data)
+plotski_button.pack()
 
 data_text = tkinter.Text(financial_statement_frame, width=100, height=50)
 data_text.pack()
