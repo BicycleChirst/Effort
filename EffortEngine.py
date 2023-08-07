@@ -97,7 +97,7 @@ def DownloadFile(ticker=default_ticker, statement_type=default_statementtype):
         response.json()["symbol"]
     except KeyError:
         print("Alphavantage sent a bullshit response")
-        return
+        return json.dumps(response.json(), indent=4)
     
     niceoutput = json.dumps(response.json(), indent=4)
     filename = GetFilename(ticker, statement_type)

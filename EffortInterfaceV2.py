@@ -1,6 +1,6 @@
-#import tkinter as tkinter
-#from tkinter import tringVar
-#from tkinter.ttk import OptionMenu, Notebook
+# import tkinter as tkinter
+# from tkinter import tringVar
+# from tkinter.ttk import OptionMenu, Notebook
 import tkinter
 import tkinter.ttk
 import json
@@ -27,36 +27,37 @@ def retrieve_and_display_data():
     data_text.delete(1.0, tkinter.END)  # Clear any existing data in the text widget
     data_text.insert(tkinter.END, json.dumps(FormatJSON(data), indent=4))
 
+
 fredrequests_history = []
+
 
 def retrieve_and_display_fred_data():
     Get_Fred_Inputs()
     print("entry values: ")
-    print(series_id_entry.get())
+    print(series_id_var.get())
     print(start_date_entry.get())
     print(end_date_entry.get())
     print("stored input variables: ")
-    print(fred_series_id_input)
     print(fred_start_date_input)
     print(fred_end_date_input)
 
     # Call the FRED data retrieval function
-    #key_indicators_data = get_series_data(fred_series_id_input, fred_start_date_input, fred_end_date_input)
-    key_indicators_data = get_series_data(series_id_entry.get(), start_date_entry.get(), end_date_entry.get())
+    # key_indicators_data = get_series_data(fred_series_id_input, fred_start_date_input, fred_end_date_input)
+    key_indicators_data = get_series_data(series_id_var.get(), start_date_entry.get(), end_date_entry.get())
 
     # Display the data in the FRED text widget
     fred_data_text.delete(1.0, tkinter.END)  # Clear any existing data in the text widget
 
     if key_indicators_data:
-        fred_data_text.insert(tkinter.END, "Date\t\tValue\n")
+        fred_data_text.insert(tkinter.END, "Date\t\t\t\t\t\tValue\n")
         fred_data_text.insert(tkinter.END, "----------------------------------------------------\n")
         for data in key_indicators_data:
-            date = data['date']
-            value = data['value'].ljust(25)
+            #date = data['date']
+            #value = data['value'].ljust(25)
             fred_data_text.insert(tkinter.END, f"{data['date']}\t\t\t\t\t\t{data['value']}\n")
     else:
         fred_data_text.insert(tkinter.END, "No data available.")
-    
+
     fredrequests_history.append(key_indicators_data)
 
 
@@ -72,17 +73,16 @@ def read_fred_series_ids(filename):
                 series_dict[series_id] = description
         return series_dict
 
-def on_series_id_select(event):
-    selected_series_id = series_id_var.get()
-    series_id_entry.delete(0, tkinter.END)  # Clear any existing text in the entry
-    series_id_entry.insert(tkinter.END, selected_series_id)
-    description_text.delete(1.0, tkinter.END)
-    if selected_series_id in fred_series_ids:
-        description = fred_series_ids[selected_series_id]
-        description_text.insert(tkinter.END, description)
-    # Clear the dropdown selection if something is entered manually in the entry
-    series_id_var.set("")
 
+def Get_Fred_Inputs():
+    global fred_start_date_input
+    global fred_end_date_input
+    fred_start_date_input = start_date_entry.get()  # Get the start date from the entry field
+    fred_end_date_input = end_date_entry.get()  # Get the end date from the entry field
+
+
+def on_series_id_select(event):
+    Get_Fred_Inputs()
 
 app = tkinter.Tk()
 app.title("Visualized Effort")
@@ -133,9 +133,6 @@ series_id_menu = tkinter.OptionMenu(fred_data_frame, series_id_var, *series_ids,
 series_id_menu.pack()
 
 
-series_id_entry = tkinter.Entry(fred_data_frame)
-series_id_entry.pack()
-
 start_date_label = tkinter.Label(fred_data_frame, text="Enter Start Date (YYYY-MM-DD):")
 start_date_label.pack()
 
@@ -161,29 +158,16 @@ fred_data_text.pack()
 # Add the FRED data frame to the notebook widget with the label "FRED Data"
 notebook.add(fred_data_frame, text="FRED Data")
 
-#setting defaults for entry fields
-series_id_entry.insert(index=0, string="UNRATE")
+# setting defaults for entry fields
 start_date_entry.insert(index=0, string="2015-12-31")
 end_date_entry.insert(index=0, string="2022-12-31")
 
-fred_series_id_input = series_id_entry.get()
+#fred_series_id_input = series_id_entry.get()
 fred_start_date_input = start_date_entry.get()
 fred_end_date_input = end_date_entry.get()
-
-def Get_Fred_Inputs():
-    fred_series_id_input = series_id_entry.get()  # Get the series ID from the entry field
-    fred_start_date_input = start_date_entry.get()  # Get the start date from the entry field
-    fred_end_date_input = end_date_entry.get()  # Get the end date from the entry field
-
-    print(series_id_entry.get())
-    print(start_date_entry.get())
-    print(end_date_entry.get())
-
 
 
 # only open the tkinter if this script is run directly
 if __name__ == "__main__":
     print("main")
-    #Get_Fred_Inputs()
     app.mainloop()
-    #Get_Fred_Inputs()
