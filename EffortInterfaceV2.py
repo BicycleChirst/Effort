@@ -66,8 +66,8 @@ def read_fred_series_ids(filename):
         for entry in series_info:
             lines = entry.strip().split('\n')
             if len(lines) >= 3:
-                series_id = lines[1].split(": ")[1].strip()
-                description = lines[2].split(": ")[1].strip()
+                series_id = lines[1].split("ID: ")[1].strip()
+                description = lines[2].split("Description: ")[1].strip()
                 series_dict[series_id] = description
         return series_dict
 
@@ -81,6 +81,8 @@ def Get_Fred_Inputs():
 
 def on_series_id_select(event):
     Get_Fred_Inputs()
+    series_id_description_text.delete(1.0, tkinter.END)
+    series_id_description_text.insert(tkinter.END, fred_series_ids[series_id_var.get()])
 
 app = tkinter.Tk()
 app.title("Visualized Effort")
@@ -108,7 +110,7 @@ statement_type_menu.pack()
 
 report_type_var = tkinter.StringVar(financial_statement_frame)
 report_type_var.set("annualReports")  # Default value for the dropdown
-report_type_menu = tkinter.ttk.OptionMenu(financial_statement_frame, report_type_var, "annualReports", "quarterlyReports")
+report_type_menu = tkinter.ttk.OptionMenu(financial_statement_frame, report_type_var, "annualReports", "quarterlyReports", "annualReports")
 report_type_menu.pack()
 
 retrieve_statement_button = tkinter.Button(financial_statement_frame, text="Retrieve and Display Data", command=retrieve_and_display_data)
@@ -128,8 +130,12 @@ series_ids = list(fred_series_ids.keys())
 series_id_var = tkinter.StringVar(fred_data_frame)
 series_id_var.set(series_ids[0])  # Default value for the dropdown
 series_id_menu = tkinter.OptionMenu(fred_data_frame, series_id_var, *series_ids, command=on_series_id_select)
+#series_id_menu.pack(anchor="nw")
 series_id_menu.pack()
+# specifying the 'side' seems to make the drop-down disappear when you release mouse-button
 
+series_id_description_text = tkinter.Text(fred_data_frame, width=45, height=5)
+series_id_description_text.pack()
 
 start_date_label = tkinter.Label(fred_data_frame, text="Enter Start Date (YYYY-MM-DD):")
 start_date_label.pack()
@@ -153,6 +159,9 @@ retrieve_fred_data_button = tkinter.Button(fred_data_frame, text="Retrieve and D
 retrieve_fred_data_button.pack()
 
 plotski_button = tkinter.Button(fred_data_frame, text="Plotski", command=plot_fred_data)
+plotski_button.pack()
+
+plotski_button = tkinter.Button(financial_statement_frame, text="Plotski", command=plotJSON)
 plotski_button.pack()
 
 data_text = tkinter.Text(financial_statement_frame, width=100, height=50)

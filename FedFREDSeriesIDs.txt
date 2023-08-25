@@ -1,3 +1,6 @@
+    Non-Farm Payroll:
+        Series ID: PAYEMS
+        Description: Number of jobs in private sector and government agencies. It excludes farm workers, private household employees, proprietors, non-profit employees, and actively serving military.
 
     2 Year T-Bill:
         Series ID: GS2
@@ -10,6 +13,50 @@
     30 Year Treasury Bond:
         Series ID: GS30
         Description: 30 year Treasury Bond interest rate
+
+    Revolving Consumer Credit Outstanding
+        Series ID: REVOLSL
+        Description: Revolving credit refers to an open-ended credit account that can be used and paid down repeatedly as long as the account remains open and in good standing.
+
+    Total Consumer Credit Owned and Securitized, Outstanding:
+        Series ID: TCCSLOAS
+        Description: Total amount of consumer credit outstanding, including both revolving and non-revolving credit.
+
+    Consumer Credit Owned and Securitized, Outstanding:
+        Series ID: CCSLOAS
+        Description: Amount of consumer credit outstanding, encompassing various types of consumer credit.
+
+    Finance Rate on Consumer Installment Loans at Commercial Banks:
+        Series ID: TERMCBPERI
+        Description: Finance rates on consumer installment loans at commercial banks, indicating borrowing costs.
+
+    Interest Rates, 3-Year Auto Loan:
+        Series ID: TERMCBAUTO3
+        Description: Interest rates for 3-year auto loans, reflecting consumer borrowing trends.
+
+    Finance Rate on Personal Loans at Commercial Banks:
+        Series ID: TERMCBPER
+        Description: Finance rates for personal loans at commercial banks.
+
+    Interest Rates, Credit Cards:
+        Series ID: TERMCRCARD
+        Description: Interest rates for credit cards, relevant for revolving credit trends.
+
+    Finance Rate on Credit Card Plans, All Accounts:
+        Series ID: TERMCRCARD159NNBR
+        Description: Finance rates for credit card plans across all accounts.
+
+    Consumer Credit Delinquency Rates: All Loans, Banks:
+        Series ID: DRCCLACBS
+        Description: Consumer credit delinquency rates, reflecting the health of consumer finances.
+
+    Consumer Installment Credit Outstanding, Education:
+        Series ID: TOTCI
+        Description: Outstanding consumer installment credit for education-related expenses.
+
+    Consumer Credit 1-Year Percent Change:
+        Series ID: CONSUMER
+        Description: Year-over-year percentage change in consumer credit, indicating changing borrowing behavior.
 
     Gross Domestic Product:
         Series ID: GDP
@@ -91,4 +138,10 @@
         Series ID: CES0500000003
         Description: All Employees: Total Private: Average Hourly Earnings
 
+    Housing Inventory: Year-Over-Year in Juneau, AK:
+        Series ID: MEDLISPRIYY27940
+        Description: Housing Inventory : Median Listing Price Year-Over-Year in Juneau, AK (CBSA)
 
+    Delinquency Rate on Credit Card Loans
+        Series ID: DRCCLACBS
+        Description: Delinquency Rate on Credit Card Loans, All Commercial Banks
