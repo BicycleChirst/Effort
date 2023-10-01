@@ -5,10 +5,12 @@ import tkinter
 import tkinter.ttk
 import json
 import pathlib
+
 import Plotski
 from JSONwithDADMIN import *
-from FedGiveIt import *
-from Plotski import *
+from FedGiveIt import get_series_data
+
+
 
 def retrieve_and_display_data():
     import JSONwithDADMIN
@@ -87,6 +89,11 @@ def on_key_type_select(event):
 def on_statement_type_select(event):
     key_menu.set_menu(*StatementType_Keylist[statement_type_var.get()])
     Plotski.plot_statementtype_var = statement_type_var.get()
+
+def ticker_selection():
+    Plotski.plot_ticker_var = ticker_entry.get()
+    Plotski.plotJSON()
+
 
 app = tkinter.Tk()
 app.title("Visualized Effort")
@@ -173,11 +180,12 @@ def retrieve_and_display_fred_data():
 retrieve_fred_data_button = tkinter.Button(fred_data_frame, text="Retrieve and Display FRED Data", command=retrieve_and_display_fred_data)
 retrieve_fred_data_button.pack()
 
-plotski_button = tkinter.Button(fred_data_frame, text="Plotski", command=plot_fred_data)
+plotski_button = tkinter.Button(fred_data_frame, text="Plotski", command=Plotski.plot_fred_data)
 plotski_button.pack()
 
-plotski_button = tkinter.Button(financial_statement_frame, text="Plotski", command=plotJSON)
+plotski_button = tkinter.Button(financial_statement_frame, text="Plotski", command=ticker_selection)
 plotski_button.pack()
+
 
 data_text = tkinter.Text(financial_statement_frame, width=100, height=50)
 data_text.pack()

@@ -1,20 +1,19 @@
 import matplotlib.pyplot as plt
-from JSONwithDADMIN import LoadJSON_FromComponents
-
+from matplotlib.ticker import FuncFormatter
 # each entry in this list is a pair of [series_id : [data]]
 fredrequests_history = []
 # number of months between dates shown on the plot
 date_spacing = 12
+from JSONwithDADMIN import *
 
-from EffortEngine import *
 
 plot_key_var = 'netIncome'
 plot_statementtype_var = 'INCOME_STATEMENT'
-plot_ticker_var = 'AMD'
+plot_ticker_var = 'EH'
 
 def plotJSON():
     #testfile = LOADED_FILES["AMD_INCOME_STATEMENT"]
-    testfile = LOADED_FILES[f"AMD_{plot_statementtype_var}"]
+    testfile = LOADED_FILES[f"{plot_ticker_var}_{plot_statementtype_var}"]
     quarters = testfile["quarterlyReports"]
     PrintJSON(testfile)
 
@@ -24,12 +23,24 @@ def plotJSON():
     print(dates)
     print(dataski)
 
+    # Create a custom formatter to format the y-axis labels
+    def y_axis_formatter(x, pos):
+        if x >= 1e9:
+            return f'{x / 1e9:.1f}B' if x >= 1e9 else f'{x:.0f}'
+        elif x >= 1e6:
+            return f'{x / 1e6:.1f}M' if x >= 1e6 else f'{x:.0f}'
+        else:
+            return f'{x:.0f}'
+
     plt.figure(figsize=(10, 10))
     plt.plot(dates, dataski, marker='o', linestyle='-')
     plt.xlabel('Date')
     plt.ylabel('Value')
     plt.title(f'{testfile["symbol"]} {testfile["StatementType"]} {plot_key_var}')
     plt.xticks(rotation=45)
+
+    plt.gca().yaxis.set_major_formatter(FuncFormatter(y_axis_formatter))  #apply formatter to y-axis
+
     plt.grid(True)
     plt.show()
 
