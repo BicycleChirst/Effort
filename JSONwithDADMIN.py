@@ -1,5 +1,36 @@
 from EffortEngine import *
 
+StatementType_Keylist = {
+    "INCOME_STATEMENT": ['fiscalDateEnding', 'reportedCurrency', 'grossProfit', 'totalRevenue', 'costOfRevenue',
+                         'costofGoodsAndServicesSold', 'operatingIncome', 'sellingGeneralAndAdministrative',
+                         'researchAndDevelopment', 'operatingExpenses', 'investmentIncomeNet', 'netInterestIncome',
+                         'interestIncome', 'interestExpense', 'nonInterestIncome', 'otherNonOperatingIncome',
+                         'depreciation', 'depreciationAndAmortization', 'incomeBeforeTax', 'incomeTaxExpense',
+                         'interestAndDebtExpense', 'netIncomeFromContinuingOperations', 'comprehensiveIncomeNetOfTax',
+                         'ebit', 'ebitda', 'netIncome'],
+    "BALANCE_SHEET": ['fiscalDateEnding', 'reportedCurrency', 'totalAssets', 'totalCurrentAssets',
+                      'cashAndCashEquivalentsAtCarryingValue', 'cashAndShortTermInvestments', 'inventory',
+                      'currentNetReceivables', 'totalNonCurrentAssets', 'propertyPlantEquipment',
+                      'accumulatedDepreciationAmortizationPPE', 'intangibleAssets', 'intangibleAssetsExcludingGoodwill',
+                      'goodwill', 'investments', 'longTermInvestments', 'shortTermInvestments', 'otherCurrentAssets',
+                      'otherNonCurrentAssets', 'totalLiabilities', 'totalCurrentLiabilities', 'currentAccountsPayable',
+                      'deferredRevenue', 'currentDebt', 'shortTermDebt', 'totalNonCurrentLiabilities',
+                      'capitalLeaseObligations', 'longTermDebt', 'currentLongTermDebt', 'longTermDebtNoncurrent',
+                      'shortLongTermDebtTotal', 'otherCurrentLiabilities', 'otherNonCurrentLiabilities',
+                      'totalShareholderEquity', 'treasuryStock', 'retainedEarnings', 'commonStock',
+                      'commonStockSharesOutstanding'],
+    "CASH_FLOW" : ['fiscalDateEnding', 'reportedCurrency', 'operatingCashflow', 'paymentsForOperatingActivities',
+                   'proceedsFromOperatingActivities', 'changeInOperatingLiabilities', 'changeInOperatingAssets',
+                   'depreciationDepletionAndAmortization', 'capitalExpenditures', 'changeInReceivables',
+                   'changeInInventory', 'profitLoss', 'cashflowFromInvestment', 'cashflowFromFinancing',
+                   'proceedsFromRepaymentsOfShortTermDebt', 'paymentsForRepurchaseOfCommonStock',
+                   'paymentsForRepurchaseOfEquity', 'paymentsForRepurchaseOfPreferredStock', 'dividendPayout',
+                   'dividendPayoutCommonStock', 'dividendPayoutPreferredStock', 'proceedsFromIssuanceOfCommonStock',
+                   'proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet', 'proceedsFromIssuanceOfPreferredStock',
+                   'proceedsFromRepurchaseOfEquity', 'proceedsFromSaleOfTreasuryStock',
+                   'changeInCashAndCashEquivalents', 'changeInExchangeRate', 'netIncome'],
+}
+
 WantedKeys = {
     "INCOME_STATEMENT" : ["grossProfit", "netIncome"],
     "BALANCE_SHEET" : ["commonStockSharesOutstanding", "retainedEarnings", "longTermDebt", "totalAssets", "deferredRevenue"]

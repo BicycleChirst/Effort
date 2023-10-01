@@ -81,9 +81,12 @@ def on_series_id_select(event):
     series_id_description_text.delete(1.0, tkinter.END)
     series_id_description_text.insert(tkinter.END, fred_series_ids[series_id_var.get()])
 
-def on_statement_type_select(event):
-    print(key_var.get())
+def on_key_type_select(event):
     Plotski.plot_key_var = key_var.get()
+
+def on_statement_type_select(event):
+    key_menu.set_menu(*StatementType_Keylist[statement_type_var.get()])
+    Plotski.plot_statementtype_var = statement_type_var.get()
 
 app = tkinter.Tk()
 app.title("Visualized Effort")
@@ -106,7 +109,7 @@ statement_type_label.pack()
 
 statement_type_var = tkinter.StringVar(financial_statement_frame)
 statement_type_var.set("INCOME_STATEMENT")  # Default value for the dropdown
-statement_type_menu = tkinter.ttk.OptionMenu(financial_statement_frame, statement_type_var, "INCOME_STATEMENT", "BALANCE_SHEET", "CASH_FLOW", "INCOME_STATEMENT")
+statement_type_menu = tkinter.ttk.OptionMenu(financial_statement_frame, statement_type_var, "INCOME_STATEMENT", "BALANCE_SHEET", "CASH_FLOW", "INCOME_STATEMENT", command=on_statement_type_select)
 statement_type_menu.pack()
 
 key_label = tkinter.Label(financial_statement_frame, text="Select Key:")
@@ -117,7 +120,7 @@ key_var = tkinter.StringVar(financial_statement_frame)
 key_var.set("totalRevenue")  # Initial entry
 
 # Create a dropdown menu for key selection
-key_menu = tkinter.ttk.OptionMenu(financial_statement_frame, key_var, "totalRevenue","totalRevenue","operatingIncome", command=on_statement_type_select)
+key_menu = tkinter.ttk.OptionMenu(financial_statement_frame, key_var, "ghostoption", *StatementType_Keylist["INCOME_STATEMENT"], command=on_key_type_select)
 key_menu.pack()
 
 report_type_var = tkinter.StringVar(financial_statement_frame)

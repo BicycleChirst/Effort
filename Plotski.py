@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from JSONwithDADMIN import LoadJSON_FromComponents
 
 # each entry in this list is a pair of [series_id : [data]]
 fredrequests_history = []
@@ -8,9 +9,12 @@ date_spacing = 12
 from EffortEngine import *
 
 plot_key_var = 'netIncome'
+plot_statementtype_var = 'INCOME_STATEMENT'
+plot_ticker_var = 'AMD'
 
 def plotJSON():
-    testfile = LOADED_FILES["AMD_INCOME_STATEMENT"]
+    #testfile = LOADED_FILES["AMD_INCOME_STATEMENT"]
+    testfile = LOADED_FILES[f"AMD_{plot_statementtype_var}"]
     quarters = testfile["quarterlyReports"]
     PrintJSON(testfile)
 
