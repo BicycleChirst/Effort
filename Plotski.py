@@ -7,13 +7,15 @@ date_spacing = 12
 
 from EffortEngine import *
 
+plot_key_var = 'netIncome'
+
 def plotJSON():
     testfile = LOADED_FILES["AMD_INCOME_STATEMENT"]
     quarters = testfile["quarterlyReports"]
     PrintJSON(testfile)
 
     dates = [*reversed([Q['fiscalDateEnding'] for Q in quarters])]
-    dataski = [float(Q['grossProfit']) for Q in quarters]
+    dataski = [*reversed([float(Q[plot_key_var]) for Q in quarters])]
 
     print(dates)
     print(dataski)
@@ -22,7 +24,7 @@ def plotJSON():
     plt.plot(dates, dataski, marker='o', linestyle='-')
     plt.xlabel('Date')
     plt.ylabel('Value')
-    plt.title(f'Testgraph')
+    plt.title(f'{testfile["symbol"]} {testfile["StatementType"]} {plot_key_var}')
     plt.xticks(rotation=45)
     plt.grid(True)
     plt.show()

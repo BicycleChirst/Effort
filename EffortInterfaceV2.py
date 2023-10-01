@@ -5,11 +5,9 @@ import tkinter
 import tkinter.ttk
 import json
 import pathlib
-
 import Plotski
 from JSONwithDADMIN import *
 from FedGiveIt import *
-
 from Plotski import *
 
 def retrieve_and_display_data():
@@ -71,7 +69,6 @@ def read_fred_series_ids(filename):
                 series_dict[series_id] = description
         return series_dict
 
-
 def Get_Fred_Inputs():
     global fred_start_date_input
     global fred_end_date_input
@@ -84,6 +81,10 @@ def on_series_id_select(event):
     series_id_description_text.delete(1.0, tkinter.END)
     series_id_description_text.insert(tkinter.END, fred_series_ids[series_id_var.get()])
 
+def on_statement_type_select(event):
+    print(key_var.get())
+    Plotski.plot_key_var = key_var.get()
+
 app = tkinter.Tk()
 app.title("Visualized Effort")
 
@@ -91,7 +92,7 @@ app.title("Visualized Effort")
 notebook = tkinter.ttk.Notebook(app)
 notebook.pack(fill='both', expand=True)
 
-# Financial statement retrieval page
+# Financial statement retrieval frame
 financial_statement_frame = tkinter.Frame(notebook)
 
 ticker_label = tkinter.Label(financial_statement_frame, text="Enter Ticker:")
@@ -107,6 +108,17 @@ statement_type_var = tkinter.StringVar(financial_statement_frame)
 statement_type_var.set("INCOME_STATEMENT")  # Default value for the dropdown
 statement_type_menu = tkinter.ttk.OptionMenu(financial_statement_frame, statement_type_var, "INCOME_STATEMENT", "BALANCE_SHEET", "CASH_FLOW", "INCOME_STATEMENT")
 statement_type_menu.pack()
+
+key_label = tkinter.Label(financial_statement_frame, text="Select Key:")
+key_label.pack()
+
+# Create a variable for the selected key
+key_var = tkinter.StringVar(financial_statement_frame)
+key_var.set("totalRevenue")  # Initial entry
+
+# Create a dropdown menu for key selection
+key_menu = tkinter.ttk.OptionMenu(financial_statement_frame, key_var, "totalRevenue","totalRevenue","operatingIncome", command=on_statement_type_select)
+key_menu.pack()
 
 report_type_var = tkinter.StringVar(financial_statement_frame)
 report_type_var.set("annualReports")  # Default value for the dropdown

@@ -1,3 +1,11 @@
+    US Gas AVG price
+        Series ID: GASREGW
+        Description: US Regular All Formulations Gas Price
+
+    Used Car/Truck CPI:
+        Series ID: CUSR0000SETA02
+        Description: Consumer Price Index for All Urban Consumers, used Cars and Trucks in U.S. City Average
+
     Non-Farm Payroll:
         Series ID: PAYEMS
         Description: Number of jobs in private sector and government agencies. It excludes farm workers, private household employees, proprietors, non-profit employees, and actively serving military.
