@@ -107,7 +107,7 @@ def FormatJSON(thejson):
         for key, value in report.items():
             if key in KeyFormattingExcluded: newjson.append(f"{key} : {value}"); continue;
             if value == "None": newjson.append(f"{key} : ${0}"); continue;
-            newjson.append(f"{key} : ${'{:,.2f}'.format(int(value))}")
+            newjson.append(f"{key} : ${'{:,.2f}'.format(float(value))}")
         newjson.append("-" * 93)
     return newjson
 

@@ -18,24 +18,46 @@ def plotJSON():
     PrintJSON(testfile)
 
     dates = [*reversed([Q['fiscalDateEnding'] for Q in quarters])]
-    dataski = [*reversed([float(Q[plot_key_var]) for Q in quarters])]
+    dataski = []
+    reported_currency = [Q['reportedCurrency'] for Q in quarters]
+    for Q in quarters:
+        value = Q[plot_key_var]
+        if value is not None:
+            try:
+                numeric_value = float(value)
+                dataski.append(numeric_value)
+            except ValueError:
+                print(f"Could not convert value to float: {value}")
+                dataski.append(0)
+        else:
+            dataski.append(0)
 
+    dataski = [*reversed(dataski)]
     print(dates)
     print(dataski)
 
     # Create a custom formatter to format the y-axis labels
     def y_axis_formatter(x, pos):
-        if x >= 1e9:
-            return f'{x / 1e9:.1f}B' if x >= 1e9 else f'{x:.0f}'
-        elif x >= 1e6:
-            return f'{x / 1e6:.1f}M' if x >= 1e6 else f'{x:.0f}'
+        if x == 0:
+            return '0'
+        abs_x = abs(x)
+        if abs_x >= 1e9:
+            formatted_x = f'{abs_x / 1e9:.1f}B'
+        elif abs_x >= 1e6:
+            formatted_x = f'{abs_x / 1e6:.1f}M'
         else:
-            return f'{x:.0f}'
+            formatted_x = f'{abs_x:.0f}'
+
+        # Add a minus sign for negative values
+        if x < 0:
+            formatted_x = '-' + formatted_x
+
+        return formatted_x
 
     plt.figure(figsize=(10, 10))
     plt.plot(dates, dataski, marker='o', linestyle='-')
     plt.xlabel('Date')
-    plt.ylabel('Value')
+    plt.annotate(f'Values in {reported_currency[0]}',(0,1),xycoords='axes fraction',rotation=0)
     plt.title(f'{testfile["symbol"]} {testfile["StatementType"]} {plot_key_var}')
     plt.xticks(rotation=45)
 
