@@ -6,6 +6,12 @@ fredrequests_history = []
 date_spacing = 12
 from JSONwithDADMIN import *
 
+currency_symbolmap = {
+    'USD' : '$',
+    'CNY' : '¥',
+    'EURO' : '€',
+    'GBP' : '£',
+}
 
 plot_key_var = 'netIncome'
 plot_statementtype_var = 'INCOME_STATEMENT'
@@ -19,7 +25,7 @@ def plotJSON():
 
     dates = [*reversed([Q['fiscalDateEnding'] for Q in quarters])]
     dataski = []
-    reported_currency = [Q['reportedCurrency'] for Q in quarters]
+
     for Q in quarters:
         value = Q[plot_key_var]
         if value is not None:
@@ -36,6 +42,10 @@ def plotJSON():
     print(dates)
     print(dataski)
 
+    #reported_currency = [Q['reportedCurrency'] for Q in quarters]
+    reported_currency = quarters[0]['reportedCurrency']
+    currency_symbol = currency_symbolmap[reported_currency]
+
     # Create a custom formatter to format the y-axis labels
     def y_axis_formatter(x, pos):
         if x == 0:
@@ -43,10 +53,10 @@ def plotJSON():
         abs_x = abs(x)
         if abs_x >= 1e9:
             formatted_x = f'{abs_x / 1e9:.1f}B'
-        elif abs_x >= 1e6:
-            formatted_x = f'{abs_x / 1e6:.1f}M'
         else:
-            formatted_x = f'{abs_x:.0f}'
+            formatted_x = f'{abs_x / 1e6:.1f}M'
+
+        formatted_x = currency_symbol + formatted_x
 
         # Add a minus sign for negative values
         if x < 0:
@@ -57,7 +67,7 @@ def plotJSON():
     plt.figure(figsize=(10, 10))
     plt.plot(dates, dataski, marker='o', linestyle='-')
     plt.xlabel('Date')
-    plt.annotate(f'Values in {reported_currency[0]}',(0,1),xycoords='axes fraction',rotation=0)
+    plt.annotate(f'Values in {reported_currency}',(0,1),xycoords='axes fraction',rotation=0)
     plt.title(f'{testfile["symbol"]} {testfile["StatementType"]} {plot_key_var}')
     plt.xticks(rotation=45)
 
