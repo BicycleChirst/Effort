@@ -56,6 +56,19 @@ KeyFormattingExcluded = ["fiscalDateEnding", "reportedCurrency"]
 
 ReportingPeriod = "annualReports"
 
+# this function converts all the fields in a JSON file
+# from "None" -> 0, and otherwise from string to float
+# skipping the (non-numerical fields) listed in KeyFormattingExcluded
+def ConvertJSONnumbers(theJson):
+    P = ['annualReports', 'quarterlyReports']
+    [X, Y] = [theJson[Z] for Z in P]
+    for reportingPeriod in [*X, *Y]:
+        for key, value in reportingPeriod.items():
+            if key in KeyFormattingExcluded: continue;
+            if value == "None": reportingPeriod[key] = 0
+            else: reportingPeriod[key] = float(value)
+    return theJson
+
 def OutputName(ticker, statement_type):
     name = f"{ticker}_{statement_type}_calc.txt"
     calcpath = str(CalcFolder) + name
@@ -100,7 +113,6 @@ def PrintAllKeys(ticker, statement_type):
             if value == "None": print(f"{key} : ${0}"); continue;
             print(f"{key} : ${'{:,.2f}'.format(int(value))}")
         print('\n')
-
 def FormatJSON(thejson):
     newjson = []
     for report in thejson[ReportingPeriod]:
