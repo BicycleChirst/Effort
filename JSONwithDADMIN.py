@@ -59,7 +59,7 @@ ReportingPeriod = "annualReports"
 # this function converts all the fields in a JSON file
 # from "None" -> 0, and otherwise from string to float
 # skipping the (non-numerical fields) listed in KeyFormattingExcluded
-def ConvertJSONnumbers(theJson):
+def ConvertJSONnumbers(theJson, reverseDates=False):
     P = ['annualReports', 'quarterlyReports']
     [X, Y] = [theJson[Z] for Z in P]
     for reportingPeriod in [*X, *Y]:
@@ -67,6 +67,9 @@ def ConvertJSONnumbers(theJson):
             if key in KeyFormattingExcluded: continue;
             if value == "None": reportingPeriod[key] = 0
             else: reportingPeriod[key] = float(value)
+    if reverseDates:
+        theJson.update({'annualReports': [*reversed(theJson['annualReports'])]})
+        theJson.update({'quarterlyReports': [*reversed(theJson['quarterlyReports'])]})
     return theJson
 
 def OutputName(ticker, statement_type):
