@@ -10,8 +10,6 @@ import Plotski
 from JSONwithDADMIN import *
 from FedGiveIt import get_series_data
 
-
-
 def retrieve_and_display_data():
     import JSONwithDADMIN
     ticker = ticker_entry.get()  # Get the ticker from the entry field
@@ -92,7 +90,16 @@ def on_statement_type_select(event):
 
 def ticker_selection():
     Plotski.plot_ticker_var = ticker_entry.get()
-    Plotski.plotJSON()
+    multi_indecies = key_multiselect.curselection()
+    actual_keys = [StatementType_Keylist["INCOME_STATEMENT"][I] for I in multi_indecies]
+    Plotski.plot_multiselect_keys = actual_keys
+    print(key_multiselect.curselection())
+    print(actual_keys)
+    if len(multi_indecies) != 0:
+        Plotski.plotMultiSelect()
+    else:
+        #Plotski.plotJSON()
+        Plotski.PlotWantedKeys()
 
 
 app = tkinter.Tk()
@@ -129,6 +136,12 @@ key_var.set("totalRevenue")  # Initial entry
 # Create a dropdown menu for key selection
 key_menu = tkinter.ttk.OptionMenu(financial_statement_frame, key_var, "ghostoption", *StatementType_Keylist["INCOME_STATEMENT"], command=on_key_type_select)
 key_menu.pack()
+
+key_multiselect = tkinter.Listbox(financial_statement_frame, selectmode="multiple")
+key_multiselect.pack(expand=tkinter.YES, fill="both")
+
+for K in StatementType_Keylist["INCOME_STATEMENT"]:
+    key_multiselect.insert(tkinter.END, K)
 
 report_type_var = tkinter.StringVar(financial_statement_frame)
 report_type_var.set("annualReports")  # Default value for the dropdown

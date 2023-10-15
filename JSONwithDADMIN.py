@@ -32,7 +32,7 @@ StatementType_Keylist = {
 }
 
 WantedKeys = {
-    "INCOME_STATEMENT" : ["grossProfit", "netIncome"],
+    "INCOME_STATEMENT" : ["grossProfit", "netIncome", "operatingExpenses"],
     "BALANCE_SHEET" : ["commonStockSharesOutstanding", "retainedEarnings", "longTermDebt", "totalAssets", "deferredRevenue"]
 }
 

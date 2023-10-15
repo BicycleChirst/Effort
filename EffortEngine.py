@@ -35,6 +35,13 @@ def AllFilenames():
 def GetFilename(ticker, statement_type):
     return f"PyFinDump/{ticker}_{statement_type}.txt" # don't append a suffix
 
+currency_symbolmap = {
+    'USD': '$',
+    'CNY': '¥',
+    'EURO': '€',
+    'GBP': '£',
+}
+
 def LoadAllFiles(subdir=Dumpfolder):
     LOADED_FILES.clear()
     TickerMap.clear()
@@ -49,6 +56,9 @@ def LoadAllFiles(subdir=Dumpfolder):
                 symbol = thejson['symbol']
                 ST = filename.removeprefix(f"{symbol}_")
                 thejson.update({'StatementType': ST})  # inserting this info to make things easier
+                # these are annoying to look up so we're writing them into the root of the json
+                thejson.update({"reportedCurrency": thejson["annualReports"][0]["reportedCurrency"]})
+                thejson.update({"currencySymbol": currency_symbolmap[thejson["reportedCurrency"]]})
                 LOADED_FILES.update({filename: thejson})
                 TickerMap.setdefault(symbol, []).append(filename)
                 StatementMap.setdefault(symbol, []).append(ST)
