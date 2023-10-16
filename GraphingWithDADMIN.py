@@ -1,8 +1,10 @@
 import tkinter
+#from tkinter.constants import *
+#from JSONwithDADMIN import *
 
 # the window
 tkWindow = tkinter.Tk()
-tkWindow.minsize(640, 480)
+tkWindow.minsize(960, 640)
 tkWindow.wm_title("-- Graphing With DADMIN --")
 # can't one-line the frame because the label and button need to reference it
 frame = tkinter.Frame(tkWindow, relief=tkinter.RIDGE, borderwidth=2)
@@ -23,12 +25,18 @@ def MakeButtons(count):
 
 
 if __name__ == '__main__':
-    MakeButtons(5)
-    newbuttonlist = MakeButtons(5)
-    for (newbuttons, counters) in newbuttonlist:
-        # somehow we can create an entirely new set of buttons by re-packing them here
-        newbuttons.pack(side=tkinter.TOP, anchor=tkinter.SW, before=frame)
-        print(f"newbuttons \n {newbuttons.keys()}\n")
+    firstset, newbuttonlist = MakeButtons(3), MakeButtons(3)
+    for (FSB, FSC) in firstset:
+        FSB.pack(side=tkinter.TOP, anchor=tkinter.SW, before=frame)
+        FSC.set(FSC.get() + 1)
+        FSB["height"] += FSC.get()
+        FSB["width"] += FSC.get()
+    for (newbuttons, counters) in [*firstset, *newbuttonlist]:
+        def switcheroo(NB=newbuttons, NC=counters):
+            NC.set(NC.get() + 1)
+            NB["width"] = NC.get()
+            NB["height"] = NC.get()
+        newbuttons["command"] = switcheroo
     print(f"tkWindow \n {tkWindow.keys()}\n")
     print(f"frame \n {frame.keys()}\n")
     tkWindow.mainloop()
