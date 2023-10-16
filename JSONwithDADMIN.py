@@ -1,59 +1,69 @@
 from EffortEngine import *
 
+# TODO: RENAME THIS
+# fields of each reporting-period in the JSON-files of a given statement-type (AlphaVantage)
 StatementType_Keylist = {
-    "INCOME_STATEMENT": ['fiscalDateEnding', 'reportedCurrency', 'grossProfit', 'totalRevenue', 'costOfRevenue',
-                         'costofGoodsAndServicesSold', 'operatingIncome', 'sellingGeneralAndAdministrative',
-                         'researchAndDevelopment', 'operatingExpenses', 'investmentIncomeNet', 'netInterestIncome',
-                         'interestIncome', 'interestExpense', 'nonInterestIncome', 'otherNonOperatingIncome',
-                         'depreciation', 'depreciationAndAmortization', 'incomeBeforeTax', 'incomeTaxExpense',
-                         'interestAndDebtExpense', 'netIncomeFromContinuingOperations', 'comprehensiveIncomeNetOfTax',
-                         'ebit', 'ebitda', 'netIncome'],
-    "BALANCE_SHEET": ['fiscalDateEnding', 'reportedCurrency', 'totalAssets', 'totalCurrentAssets',
-                      'cashAndCashEquivalentsAtCarryingValue', 'cashAndShortTermInvestments', 'inventory',
-                      'currentNetReceivables', 'totalNonCurrentAssets', 'propertyPlantEquipment',
-                      'accumulatedDepreciationAmortizationPPE', 'intangibleAssets', 'intangibleAssetsExcludingGoodwill',
-                      'goodwill', 'investments', 'longTermInvestments', 'shortTermInvestments', 'otherCurrentAssets',
-                      'otherNonCurrentAssets', 'totalLiabilities', 'totalCurrentLiabilities', 'currentAccountsPayable',
-                      'deferredRevenue', 'currentDebt', 'shortTermDebt', 'totalNonCurrentLiabilities',
-                      'capitalLeaseObligations', 'longTermDebt', 'currentLongTermDebt', 'longTermDebtNoncurrent',
-                      'shortLongTermDebtTotal', 'otherCurrentLiabilities', 'otherNonCurrentLiabilities',
-                      'totalShareholderEquity', 'treasuryStock', 'retainedEarnings', 'commonStock',
-                      'commonStockSharesOutstanding'],
-    "CASH_FLOW" : ['fiscalDateEnding', 'reportedCurrency', 'operatingCashflow', 'paymentsForOperatingActivities',
-                   'proceedsFromOperatingActivities', 'changeInOperatingLiabilities', 'changeInOperatingAssets',
-                   'depreciationDepletionAndAmortization', 'capitalExpenditures', 'changeInReceivables',
-                   'changeInInventory', 'profitLoss', 'cashflowFromInvestment', 'cashflowFromFinancing',
-                   'proceedsFromRepaymentsOfShortTermDebt', 'paymentsForRepurchaseOfCommonStock',
-                   'paymentsForRepurchaseOfEquity', 'paymentsForRepurchaseOfPreferredStock', 'dividendPayout',
-                   'dividendPayoutCommonStock', 'dividendPayoutPreferredStock', 'proceedsFromIssuanceOfCommonStock',
-                   'proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet', 'proceedsFromIssuanceOfPreferredStock',
-                   'proceedsFromRepurchaseOfEquity', 'proceedsFromSaleOfTreasuryStock',
-                   'changeInCashAndCashEquivalents', 'changeInExchangeRate', 'netIncome'],
+    "SPECIAL": {'fiscalDateEnding', 'reportedCurrency'},  # these keys are present in every StatementType
+    # the 'special' keys are non-numerical; exclude them from formatting and conversions.
+    # the 'special' keys are omitted from the following lists
+    "INCOME_STATEMENT": [
+        'grossProfit', 'totalRevenue', 'costOfRevenue', 'costofGoodsAndServicesSold', 'netIncome',
+        'operatingIncome', 'sellingGeneralAndAdministrative', 'researchAndDevelopment', 'operatingExpenses',
+        'investmentIncomeNet', 'netInterestIncome', 'interestIncome', 'interestExpense', 'nonInterestIncome',
+        'otherNonOperatingIncome', 'depreciation', 'depreciationAndAmortization', 'incomeBeforeTax', 'incomeTaxExpense',
+        'interestAndDebtExpense', 'netIncomeFromContinuingOperations', 'comprehensiveIncomeNetOfTax', 'ebit', 'ebitda',
+    ],
+    "BALANCE_SHEET": [
+        'totalAssets', 'totalCurrentAssets', 'cashAndCashEquivalentsAtCarryingValue', 'commonStockSharesOutstanding',
+        'cashAndShortTermInvestments', 'inventory', 'currentNetReceivables', 'totalNonCurrentAssets', 'commonStock',
+        'propertyPlantEquipment', 'accumulatedDepreciationAmortizationPPE', 'intangibleAssets', 'retainedEarnings',
+        'intangibleAssetsExcludingGoodwill', 'goodwill', 'investments', 'longTermInvestments', 'shortTermInvestments',
+        'otherCurrentAssets', 'otherNonCurrentAssets', 'totalLiabilities', 'totalCurrentLiabilities',
+        'currentAccountsPayable', 'deferredRevenue', 'currentDebt', 'shortTermDebt', 'totalNonCurrentLiabilities',
+        'capitalLeaseObligations', 'longTermDebt', 'currentLongTermDebt', 'longTermDebtNoncurrent', 'treasuryStock',
+        'shortLongTermDebtTotal', 'otherCurrentLiabilities', 'otherNonCurrentLiabilities', 'totalShareholderEquity',
+    ],
+    "CASH_FLOW": [
+        'operatingCashflow', 'paymentsForOperatingActivities', 'proceedsFromOperatingActivities', 'dividendPayout',
+        'changeInOperatingLiabilities', 'changeInOperatingAssets', 'depreciationDepletionAndAmortization', 'netIncome',
+        'capitalExpenditures', 'changeInReceivables', 'changeInInventory', 'profitLoss', 'cashflowFromInvestment',
+        'cashflowFromFinancing', 'proceedsFromRepaymentsOfShortTermDebt', 'paymentsForRepurchaseOfCommonStock',
+        'paymentsForRepurchaseOfEquity', 'paymentsForRepurchaseOfPreferredStock', 'changeInExchangeRate',
+        'dividendPayoutCommonStock', 'dividendPayoutPreferredStock', 'proceedsFromIssuanceOfCommonStock',
+        'proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet', 'proceedsFromIssuanceOfPreferredStock',
+        'proceedsFromRepurchaseOfEquity', 'proceedsFromSaleOfTreasuryStock', 'changeInCashAndCashEquivalents',
+    ],
 }
+
+# TODO: sort and re-align the keys
+
+# every statementtype has two lists of reports; annual and quarterly
+# the two lists always have the same keys
+# TODO: write a function to verify that
 
 WantedKeys = {
-    "INCOME_STATEMENT" : ["grossProfit", "netIncome", "operatingExpenses"],
-    "BALANCE_SHEET" : ["commonStockSharesOutstanding", "retainedEarnings", "longTermDebt", "totalAssets", "deferredRevenue"]
+    "INCOME_STATEMENT": ["grossProfit", "netIncome", "operatingExpenses"],
+    "BALANCE_SHEET": ["commonStockSharesOutstanding", "retainedEarnings", "longTermDebt", "totalAssets", ],
+    "CASH_FLOW": ["operatingCashflow", "netIncome", "dividendPayout"],
 }
 
-## these maps are laid out as denominator : list[numberator]
+## these maps are laid out as denominator : list[numerator]
 WantedPercentages = {
-    "BALANCE_SHEET" : {
-        "totalAssets" : ["totalCurrentAssets", "inventory", "propertyPlantEquipment",],
-        "longTermDebt" : ["currentDebt",],
-        "totalLiabilities" : ["totalCurrentLiabilities",],
+    "BALANCE_SHEET": {
+        "totalAssets": ["totalCurrentAssets", "inventory", "propertyPlantEquipment", ],
+        "longTermDebt": ["currentDebt", ],
+        "totalLiabilities": ["totalCurrentLiabilities", ],
     },
-    "INCOME_STATEMENT" : {
-        "totalRevenue" : ["grossProfit", "operatingExpenses",],
-        "incomeBeforeTax" : ["incomeTaxExpense",],
+    "INCOME_STATEMENT": {
+        "totalRevenue": ["grossProfit", "operatingExpenses", ],
+        "incomeBeforeTax": ["incomeTaxExpense", ],
     },
-    "CASH_FLOW" : {
-        "operatingCashflow" : ["netIncome",],
+    "CASH_FLOW": {
+        "operatingCashflow": ["netIncome", ],
     },
 }
 
 KeyFormattingExcluded = ["fiscalDateEnding", "reportedCurrency"]
-
 ReportingPeriod = "annualReports"
 
 # this function converts all the fields in a JSON file
@@ -72,10 +82,12 @@ def ConvertJSONnumbers(theJson, reverseDates=False):
         theJson.update({'quarterlyReports': [*reversed(theJson['quarterlyReports'])]})
     return theJson
 
+
 def OutputName(ticker, statement_type):
     name = f"{ticker}_{statement_type}_calc.txt"
     calcpath = str(CalcFolder) + name
     return calcpath
+
 
 def LoadJSON_FromComponents(ticker=default_ticker, statement_type=default_statementtype):
     filename = GetFilename(ticker, statement_type)
@@ -83,12 +95,14 @@ def LoadJSON_FromComponents(ticker=default_ticker, statement_type=default_statem
     with open(filename) as file:
         data = json.load(file)
     return data
-    
+
+
 def LoadJSON_FromFilename(theFilename):
     print("loading JSON from: ", theFilename)
     with open(theFilename) as file:
         data = json.load(file)
     return data
+
 
 # the JSON structure for income statements is:
 # Symbol:str, Annual_Reports:list[dict], Quarterly_Reports:list[dict]
@@ -107,6 +121,7 @@ def PrintKeys(ticker=default_ticker, statement_type=default_statementtype):
             else: print(f"{key} : ${'{:,.2f}'.format(int(value))}")
     print('\n')
 
+
 # it's actuallly easier to just print everything
 def PrintAllKeys(ticker, statement_type):
     data = LoadJSON_FromComponents(ticker, statement_type)
@@ -116,6 +131,8 @@ def PrintAllKeys(ticker, statement_type):
             if value == "None": print(f"{key} : ${0}"); continue;
             print(f"{key} : ${'{:,.2f}'.format(int(value))}")
         print('\n')
+
+
 def FormatJSON(thejson):
     newjson = []
     for report in thejson[ReportingPeriod]:
@@ -126,24 +143,28 @@ def FormatJSON(thejson):
         newjson.append("-" * 93)
     return newjson
 
+
 def CalculatePercentages(data):
-    Calc_Dict:dict = {}
+    Calc_Dict: dict = {}
     dictname = data["symbol"] + "_" + data["StatementType"] + "_annualReports"
     Calc_Dict.update({"dictname" : dictname})
     ToCalc = WantedPercentages[data["StatementType"]]
     if len(ToCalc) == 0 : return
     for Rep in data["annualReports"]:
         Results = []
+
         def AsPercentage(fieldOne, fieldTwo):
             if Rep[fieldOne] == "None" or Rep[fieldTwo] == "None":
                 return "None"
             thenumber = float(Rep[fieldOne]) / float(Rep[fieldTwo]) * 100
             return f"{fieldOne} = {thenumber:.3f}% of {fieldTwo}"
+
         for denominator, FieldOneList in ToCalc.items():
             for FieldOne in FieldOneList:
                 Results.append(AsPercentage(FieldOne, denominator))
         Calc_Dict.update({Rep["fiscalDateEnding"] : Results})
     return Calc_Dict
+
 
 def CreateCalcsFor(tickersToUse):
     for T in tickersToUse:
