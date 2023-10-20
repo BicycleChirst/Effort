@@ -177,9 +177,9 @@ def CreateCalcsFor(tickersToUse):
             print('\n')
 
 
-PrintKeys("NVDA")
-PrintKeys("MSFT", "BALANCE_SHEET")
-PrintAllKeys("AMD", "INCOME_STATEMENT")
-
-wanted_calcs = ["MSFT", "NVDA", "EXTR"]
-CreateCalcsFor(wanted_calcs)
+if __name__ == '__main__':
+    PrintKeys("NVDA")
+    PrintKeys("MSFT", "BALANCE_SHEET")
+    PrintAllKeys("AMD", "INCOME_STATEMENT")
+    wanted_calcs = ["MSFT", "NVDA", "EXTR"]
+    CreateCalcsFor(wanted_calcs)
