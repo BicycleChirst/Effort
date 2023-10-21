@@ -69,8 +69,13 @@ def LoadAllFiles(forceReloadAll=False, subdir=Dumpfolder):
                 ST = filename.removeprefix(f"{symbol}_")
                 thejson.update({'StatementType': ST})  # inserting this info to make things easier
                 # these are annoying to look up so we're writing them into the root of the json
-                thejson.update({"reportedCurrency": thejson["annualReports"][0]["reportedCurrency"]})
-                thejson.update({"currencySymbol": currency_symbolmap[thejson["reportedCurrency"]]})
+                thejson.update({"Currency": thejson["annualReports"][0]["reportedCurrency"]})
+                thejson.update({"CurrencySymbol": currency_symbolmap[thejson["Currency"]]})
+                # getting a list of dates is also really annoying
+                thejson['Dates'] = {
+                    'quarterly': [R['fiscalDateEnding'] for R in thejson['quarterlyReports']],
+                    'annual':    [R['fiscalDateEnding'] for R in thejson['annualReports']]
+                }
                 LOADED_FILES.update({filename: thejson})
                 TickerMap.setdefault(symbol, []).append(filename)
                 StatementMap.setdefault(symbol, []).append(ST)
@@ -114,7 +119,7 @@ def DownloadFile(ticker, statement_type):
     url = "https://www.alphavantage.co/query"
     headers = {"X-RapidAPI-Key": f"{ALPHAVANTAGE_TOKEN}", "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com"}
     params = {
-        "apikey":   f"{ALPHAVANTAGE_TOKEN}", "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com",
+        "apikey": f"{ALPHAVANTAGE_TOKEN}", "X-RapidAPI-Host": "alpha-vantage.p.rapidapi.com",
         "symbol": ticker, "function": statement_type, "output_size": "full"
     }
     try:

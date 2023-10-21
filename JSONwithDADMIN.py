@@ -82,6 +82,8 @@ def ConvertJSONnumbers(theJson, reverseDates=False):
     if reverseDates:
         theJson.update({'annualReports': [*reversed(theJson['annualReports'])]})
         theJson.update({'quarterlyReports': [*reversed(theJson['quarterlyReports'])]})
+        theJson['Dates']['quarterly'] = [*reversed(theJson['Dates']['quarterly'])]
+        theJson['Dates']['annual'] = [*reversed(theJson['Dates']['annual'])]
     return theJson
 
 

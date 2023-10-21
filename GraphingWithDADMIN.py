@@ -159,7 +159,7 @@ def PlotWantedKeys(thejson, figure=None):
     ax = figure.add_subplot()
     ax.set_title('Axes', loc='left', fontstyle='oblique', fontsize='medium')
     pyplot.xlabel('Date')
-    pyplot.annotate(f'Values in {thejson["reportedCurrency"]}', (-0.135, 1.05), xycoords='axes fraction', rotation=0)
+    pyplot.annotate(f'Values in {thejson["Currency"]}', (-0.135, 1.05), xycoords='axes fraction', rotation=0)
     # the tuple positions the text; units seem to be the size of the graph.
     # set the y-coord to 0 if you want the annotation at the bottom instead
     pyplot.xticks(rotation=45)

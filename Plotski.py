@@ -26,7 +26,7 @@ def PlotWantedKeys():
             formatted_x = f'{abs_x / 1e9:.1f}B'
         else:
             formatted_x = f'{abs_x / 1e6:.1f}M'
-        formatted_x = testfile["currencySymbol"] + formatted_x
+        formatted_x = testfile["CurrencySymbol"] + formatted_x
         # Add a minus sign for negative values
         if x < 0: formatted_x = '-' + formatted_x
         return formatted_x
@@ -34,7 +34,7 @@ def PlotWantedKeys():
     # setup
     plt.figure(figsize=(10, 10))
     plt.xlabel('Date')
-    plt.annotate(f'Values in {testfile["reportedCurrency"]}', (0, 1), xycoords='axes fraction', rotation=0)
+    plt.annotate(f'Values in {testfile["Currency"]}', (0, 1), xycoords='axes fraction', rotation=0)
     plt.title(f'{testfile["symbol"]} {testfile["StatementType"]} {str(WantedKeys[testfile["StatementType"]])}')
     plt.xticks(rotation=45)
     plt.gca().yaxis.set_major_formatter(FuncFormatter(y_axis_formatter))  # apply formatter to y-axis
