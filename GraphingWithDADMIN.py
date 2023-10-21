@@ -20,10 +20,10 @@ tickerbox_frame = tkinter.LabelFrame(tkWindow, text="Tickers")
 tickerbox_frame.pack(fill="both", expand=tkinter.YES, side=tkinter.LEFT, padx=5, pady=5)
 # "extended" allows dragging to select a range of items, "multiple" does not
 # however, single-clicks will replace the current selection instead of adding to it
-ticker_listbox = tkinter.Listbox(tickerbox_frame, selectmode="extended")
+# disabling "exportselection" prevents the selection from being cleared when the list loses focus
+ticker_listbox = tkinter.Listbox(tickerbox_frame, selectmode="extended", exportselection=False)
 ticker_listbox.pack(side=tkinter.TOP, expand=tkinter.YES, fill="both", padx=5, pady=5)
-for T in sorted(StatementMap.keys()):
-    ticker_listbox.insert(tkinter.END, T)
+ticker_listbox.insert(tkinter.END, *sorted(StatementMap.keys()))
 
 tickerbox_selections = []
 def tickerbox_callback():
@@ -34,14 +34,13 @@ tkinter.Button(tickerbox_frame, text="print ticker selections", command=tickerbo
     .pack(fill="x", side=tkinter.BOTTOM)
 
 keybox_selections = {}
-for K, L in StatementType_Keylist.items():
+for (K, L) in StatementType_Keylist.items():
     if K == "SPECIAL": continue
     newframe = tkinter.LabelFrame(tkWindow, text=f"{K}")
     newframe.pack(fill="both", expand=tkinter.YES, side=tkinter.LEFT, padx=5, pady=5)
-    newbox = tkinter.Listbox(newframe, selectmode="extended")
+    newbox = tkinter.Listbox(newframe, selectmode="extended", exportselection=False)
     newbox.pack(side=tkinter.TOP, expand=tkinter.YES, fill="both", padx=5, pady=5)
-    for li in sorted(L):
-        newbox.insert(tkinter.END, li)
+    newbox.insert(tkinter.END, *sorted(L))
     keybox_selections[K] = []
     # defining parameters (which default to local variables) is required for lamba-like behavior
     def newbox_callback(B=newbox, bk=K):
