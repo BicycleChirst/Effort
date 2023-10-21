@@ -5,21 +5,29 @@ from matplotlib import pyplot
 from matplotlib.ticker import FuncFormatter
 
 
-# the window
+helptext = """
+Single-clicks will completely replace current selection
+To multi-select:
+    Click and drag inside a list to select a whole block of lines
+    Ctrl+Click to add/remove a line from the current selection
+    Shift+Click to add a range (while keeping current selections)
+"""
+
 tkWindow = tkinter.Tk()
 tkWindow.minsize(960, 640)
 tkWindow.wm_title("-- Graphing With DADMIN --")
-# can't one-line the frame because the label and button need to reference it
-frame = tkinter.Frame(tkWindow, relief=tkinter.RIDGE, borderwidth=2)
-frame.pack(fill=tkinter.BOTH, expand=tkinter.NO)
-tkinter.Label(frame, text="GraphingWithDADMIN").pack(fill="x", expand=1)
-tkinter.Button(frame, text="Exit", command=tkWindow.destroy, name="exitbutton")\
-    .pack(fill="none", side=tkinter.BOTTOM)
+topframe = tkinter.Frame(tkWindow, relief=tkinter.RIDGE, borderwidth=2)
+topframe.pack(fill=tkinter.BOTH, expand=tkinter.NO)
+tkinter.Label(topframe, text=helptext).pack()
+#tkinter.Button(topframe, text="Exit", command=tkWindow.destroy, name="exitbutton")\
+#    .pack(fill="none", side=tkinter.BOTTOM)
+
+CallbackList = []
 
 tickerbox_frame = tkinter.LabelFrame(tkWindow, text="Tickers")
 tickerbox_frame.pack(fill="both", expand=tkinter.YES, side=tkinter.LEFT, padx=5, pady=5)
 # "extended" allows dragging to select a range of items, "multiple" does not
-# however, single-clicks will replace the current selection instead of adding to it
+#   however, single-clicks will replace the current selection instead of adding to it
 # disabling "exportselection" prevents the selection from being cleared when the list loses focus
 ticker_listbox = tkinter.Listbox(tickerbox_frame, selectmode="extended", exportselection=False)
 ticker_listbox.pack(side=tkinter.TOP, expand=tkinter.YES, fill="both", padx=5, pady=5)
@@ -32,6 +40,7 @@ def tickerbox_callback():
     print(tickerbox_selections)
 tkinter.Button(tickerbox_frame, text="print ticker selections", command=tickerbox_callback)\
     .pack(fill="x", side=tkinter.BOTTOM)
+CallbackList.append(tickerbox_callback)
 
 keybox_selections = {}
 for (K, L) in StatementType_Keylist.items():
@@ -48,18 +57,17 @@ for (K, L) in StatementType_Keylist.items():
         print(keybox_selections[bk])
     tkinter.Button(newframe, text=f"print {K} selections", command=newbox_callback)\
         .pack(fill="x", side=tkinter.BOTTOM)
+    CallbackList.append(newbox_callback)
 # TODO: set height of Listbox to the length of the list or ensure widow height is enough
 
+def AllCallbacks():
+    for Callback in CallbackList:
+        Callback()
+    print('\n')
+
+tkinter.Button(topframe, text=f"GRAPH", command=AllCallbacks).pack(fill="both", side=tkinter.BOTTOM)
 
 
-
-
-
-
-
-
-
-# Create a custom formatter to format the y-axis labels
 # 'pos' appears to be a magic variable
 def y_axis_formatter(x, pos, currency='$'):
     if x == 0: return '0'
@@ -72,10 +80,9 @@ def y_axis_formatter(x, pos, currency='$'):
     # Add a minus sign for negative values
     if x < 0: formatted_x = '-' + formatted_x
     return formatted_x
-# TODO: store currency-symbol in a global variable bind it in a lambda
+# TODO: store currency-symbol in a global variable or bind it in a lambda
 
 
-# TODO: read tickers / statement types from UI
 def LoadUserSelections():
     plot_ticker_var = 'AMD'
     plot_statementtype_var = 'INCOME_STATEMENT'
@@ -111,6 +118,31 @@ def PlotWantedKeys(thejson, figure=None):
     return figure
 
 
+# we'll add this function to the callbacks
+def Graph():
+    # assume that all other callbacks have triggered
+    userselection = LoadUserSelections()
+    newfig = None
+    for F in userselection:
+        newfig = PlotWantedKeys(F)
+    PlotWantedKeys(userselection[0])
+    pyplot.show(block=False)
+
+# instead of calling '.show' without blocking,
+# you can instead enable "interactive mode", which automatically shows figures
+# without the need to call "show"
+#pyplot.ion()
+# do I call this before the other pyplot stuff or what?
+
 if __name__ == '__main__':
+    CallbackList.append(Graph)
     tkWindow.mainloop()
     print("window closed")
+
+# TODO: check that the selected statementtypes actually exist
+# TODO: replace the jank nested-functions with actual lambdas
+# TODO: figure out why passing the 'newfig' creates overlapping axes
+# TODO: implement some kind of config-file to save GUI-selection states
+# TODO: right-click to hide lines from listbox (and button to unhide all)
+# also default to only showing "Wanted_Tickers"
+# TODO: functionality to save/load graphs
