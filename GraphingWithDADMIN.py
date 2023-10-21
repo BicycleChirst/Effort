@@ -13,22 +13,43 @@ tkWindow.wm_title("-- Graphing With DADMIN --")
 frame = tkinter.Frame(tkWindow, relief=tkinter.RIDGE, borderwidth=2)
 frame.pack(fill=tkinter.BOTH, expand=tkinter.NO)
 tkinter.Label(frame, text="GraphingWithDADMIN").pack(fill="x", expand=1)
-tkinter.Button(frame, text="Exit", command=tkWindow.destroy, name="exitbutton").pack(fill="none", side=tkinter.BOTTOM)
+tkinter.Button(frame, text="Exit", command=tkWindow.destroy, name="exitbutton")\
+    .pack(fill="none", side=tkinter.BOTTOM)
 
+tickerbox_frame = tkinter.LabelFrame(tkWindow, text="Tickers")
+tickerbox_frame.pack(fill="both", expand=tkinter.YES, side=tkinter.LEFT, padx=5, pady=5)
 # "extended" allows dragging to select a range of items, "multiple" does not
 # however, single-clicks will replace the current selection instead of adding to it
-ticker_listbox = tkinter.Listbox(tkWindow, selectmode="extended")
-ticker_listbox.pack(side=tkinter.LEFT, expand=tkinter.NO, fill="y", padx=5, pady=5)
+ticker_listbox = tkinter.Listbox(tickerbox_frame, selectmode="extended")
+ticker_listbox.pack(side=tkinter.TOP, expand=tkinter.YES, fill="both", padx=5, pady=5)
 for T in sorted(StatementMap.keys()):
     ticker_listbox.insert(tkinter.END, T)
 
-selected_keybox_dict = {}
+tickerbox_selections = []
+def tickerbox_callback():
+    global tickerbox_selections
+    tickerbox_selections = [ticker_listbox.get(I) for I in ticker_listbox.curselection()]
+    print(tickerbox_selections)
+tkinter.Button(tickerbox_frame, text="print ticker selections", command=tickerbox_callback)\
+    .pack(fill="x", side=tkinter.BOTTOM)
+
+keybox_selections = {}
 for K, L in StatementType_Keylist.items():
     if K == "SPECIAL": continue
-    newbox = tkinter.Listbox(tkWindow, selectmode="extended")
-    newbox.pack(side=tkinter.LEFT, expand=tkinter.YES, fill="both", padx=5, pady=5)
+    newframe = tkinter.LabelFrame(tkWindow, text=f"{K}")
+    newframe.pack(fill="both", expand=tkinter.YES, side=tkinter.LEFT, padx=5, pady=5)
+    newbox = tkinter.Listbox(newframe, selectmode="extended")
+    newbox.pack(side=tkinter.TOP, expand=tkinter.YES, fill="both", padx=5, pady=5)
     for li in sorted(L):
         newbox.insert(tkinter.END, li)
+    keybox_selections[K] = []
+    # defining parameters (which default to local variables) is required for lamba-like behavior
+    def newbox_callback(B=newbox, bk=K):
+        keybox_selections[bk] = [B.get(I) for I in B.curselection()]
+        print(keybox_selections[bk])
+    tkinter.Button(newframe, text=f"print {K} selections", command=newbox_callback)\
+        .pack(fill="x", side=tkinter.BOTTOM)
+# TODO: set height of Listbox to the length of the list or ensure widow height is enough
 
 
 # 'keyevent' gets passed implicitly
@@ -122,7 +143,6 @@ def PlotWantedKeys(thejson, figure=None):
 
 if __name__ == '__main__':
     #ButtonExperiment()
-    print(selected_keybox_dict)
     tkWindow.mainloop()
     #userselection = LoadUserSelections()
     #newfig = None
