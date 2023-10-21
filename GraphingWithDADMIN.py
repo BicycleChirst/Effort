@@ -37,6 +37,7 @@ To multi-select:
     Click and drag inside a list to select a whole block of lines
     Ctrl+Click to add/remove a line from the current selection
     Shift+Click to add a range (while keeping current selections)
+ESC to deselect anything in the current list
 """
 
 tkWindow = tkinter.Tk()
@@ -85,6 +86,7 @@ for (K, L) in Keytable.items():
         .pack(fill="x", side=tkinter.BOTTOM)
     CallbackList.append(newbox_callback)
 # TODO: set height of Listbox to the length of the list or ensure widow height is enough
+
 
 def AllCallbacks():
     for Callback in CallbackList:
@@ -150,84 +152,75 @@ def LoadSelectedFiles():
 # TODO: figure out if duplicate keys across statement-types are equivalent
     # like 'netIncome' in both 'INCOME_STATEMENT' and 'CASH_FLOW'
 
+def ExtractData(filemap):
+    extracted_data = {}
+    for (ticker, filelist) in filemap.items():
+        newdata = {}
+        sharedinfoExtracted = False  # flag prevent redundant updates of info shared across statements
+        for statement in filelist:
+            if not sharedinfoExtracted:
+                # we just grab the top-level info from the first statement and assume it's the same for all of them
+                newdata.update({
+                    'symbol':         ticker,
+                    'Currency':       statement['Currency'],
+                    'CurrencySymbol': statement['CurrencySymbol'],
+                    'Dates':          statement['Dates']['quarterly'],
+                    'TargetKeys':     []
+                })
+                sharedinfoExtracted = True
+            targetkeys = WantedKeys[statement['StatementType']]
+            newdata['TargetKeys'].extend(targetkeys)
+            for tk in targetkeys:
+                newdata.update({tk: [R[tk] for R in statement['quarterlyReports']]})
+        extracted_data.update({ticker: newdata})
+    return extracted_data
 
-def PlotWantedKeys(thejson, figure=None):
-    # setup
-    if figure is None:
-        figure = pyplot.figure(figsize=(10, 10), layout='constrained', clear=True)
-        figure.suptitle(f'{thejson["symbol"]} {thejson["StatementType"]} {str(WantedKeys[thejson["StatementType"]])}')
-    ax = figure.add_subplot()
-    ax.set_title('Axes', loc='left', fontstyle='oblique', fontsize='medium')
-    pyplot.xlabel('Date')
-    pyplot.annotate(f'Values in {thejson["Currency"]}', (-0.135, 1.05), xycoords='axes fraction', rotation=0)
-    # the tuple positions the text; units seem to be the size of the graph.
-    # set the y-coord to 0 if you want the annotation at the bottom instead
-    pyplot.xticks(rotation=45)
-    pyplot.gca().yaxis.set_major_formatter(FuncFormatter(y_axis_formatter))  # apply formatter to y-axis
-    pyplot.grid(True)
 
-    # handles, labels = ax.get_legend_handles_labels()
-    quarters = thejson["quarterlyReports"]
-    dates = [Q['fiscalDateEnding'] for Q in quarters]
-    for K in WantedKeys[thejson["StatementType"]]:
-        ax.plot(dates, [Q[K] for Q in quarters], marker='o', linestyle='-', label=f"{K}")
-    ax.legend()
-    return figure
-
-
-# TODO: pull out all the data here
-# we'll add this function to the callbacks
 def Graph():
     # assume that all other callbacks have triggered
     filemap = LoadSelectedFiles()
-    #newfig = None
-    #for F in userselection:
-    #    newfig = PlotWantedKeys(F)
-    #PlotWantedKeys(userselection)
-    #pyplot.show(block=False)
+    datamap = ExtractData(filemap)
+    for (ticker, data) in datamap.items():
+        # 'num' is an ID that's mapped to the figure
+        figure = pyplot.figure(num=f"{ticker}_Fig", figsize=(10, 10))
+        figure.suptitle(f"{ticker}")
+        figure.supxlabel('Date')
+        figure.supylabel(f'Values in {data["Currency"]}')
+        ax = figure.subplots()
+        ax.grid(True)
+        pyplot.xticks(rotation=45)
+        pyplot.gca().yaxis.set_major_formatter(FuncFormatter(y_axis_formatter))  # apply formatter to y-axis
+        for targetkey in data['TargetKeys']:
+            #print(f"{targetkey}: {data[targetkey]}")
+            ax.plot(data['Dates'], data[targetkey], marker='o', linestyle='-', label=f"{targetkey}")
+        ax.legend()
+    pyplot.show()
+    #pyplot.show(block=False)   # freezes everything
 
-
-# instead of calling '.show' without blocking,
-# you can instead enable "interactive mode", which automatically shows figures
-# without the need to call "show"
-#pyplot.ion()
-# do I call this before the other pyplot stuff or what?
-
-# qr = userselections['IBM'][0]['quarterlyReports']
-# ziptest = list(list(zip([r['fiscalDateEnding'], r['grossProfit'], r['reportedCurrency']])) for r in qr)
 
 if __name__ == '__main__':
-    #CallbackList.append(Graph)
-    #tkWindow.mainloop()
+    CallbackList.append(Graph)
+    tkWindow.mainloop()
+    print("window closed")
+
+
+# sets variables manually so you can bypass the GUI
+def SetupForTest():
+    global tickerbox_selections
+    global keybox_selections
     tickerbox_selections = ["AMD", "INTL"]
     keybox_selections = {
         "INCOME_STATEMENT": ["grossProfit", "netIncome"],
         "BALANCE_SHEET": ["longTermDebt", "totalAssets"],
         "CASH_FLOW": [],  # this will always have all entries, with blank lists if no selection
     }
-    filemap = LoadSelectedFiles()
-    
-    extracted_data = {}
-    amdfiles = filemap['AMD']
-    thestatement = amdfiles[0]
-    targetkeys = WantedKeys[thestatement['StatementType']]
-    reps = thestatement['quarterlyReports']
-    
-    thedates = [R['fiscalDateEnding'] for R in reps]
-    extracted_data.update({"dates": thedates})
-    for tk in targetkeys:
-        extracted_data.update({tk: [R[tk] for R in reps]})
-    
-    #thedata = [[R[tk] for R in reps] for tk in targetkeys]
-    #bigcombo = list(zip(reps[0].keys(), reps[0].values(), reps[1].values()))
-    #bigcombo = list(zip(reps[0].keys(), *[R.values() for R in reps]))
-    # if you're using the zip method, it's important that the targetkeys are sorted (or not?)
-    print("window closed")
 
 
-# TODO: what if the dates don't match across files?
+# TODO: figure out how to prevent pyplot from blocking the tkinter mainloop
+# TODO: button or callback to close all the graphs / windows on focus-switch
+# TODO: option to put all the graphs into a single window / plot
+# TODO: check/handle cases where shared info (dates, currency, etc) don't actually match between statements
 # TODO: replace the jank nested-functions with actual lambdas
-# TODO: figure out why passing the 'newfig' creates overlapping axes
 # TODO: implement some kind of config-file to save GUI-selection states
 # TODO: right-click to hide lines from listbox (and button to unhide all)
 # also default to only showing "Wanted_Tickers"

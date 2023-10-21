@@ -43,3 +43,31 @@ def ButtonExperiment():
         newbuttons["command"] = switcheroo
     print(f"tkWindow \n {tkWindow.keys()}\n")
     print(f"frame \n {topframe.keys()}\n")
+
+
+# older version of the graphing function, potentially a useful reference
+def PlotWantedKeys(thejson, figure=None):
+    # setup
+    if figure is None:
+        figure = pyplot.figure(figsize=(10, 10), layout='constrained', clear=True)
+        figure.suptitle(f'{thejson["symbol"]} {thejson["StatementType"]} {str(WantedKeys[thejson["StatementType"]])}')
+    ax = figure.add_subplot()
+    ax.set_title('Axes', loc='left', fontstyle='oblique', fontsize='medium')
+    # these can be called on 'ax' instead of 'pyplot'
+    pyplot.xlabel('Date')
+    pyplot.annotate(f'Values in {thejson["Currency"]}', (-0.135, 1.05), xycoords='axes fraction', rotation=0)
+    # the tuple positions the text; units seem to be the size of the graph.
+    # set the y-coord to 0 if you want the annotation at the bottom instead
+    # these cannot be called on 'ax'; they must be called through 'pyplot', it seems
+    pyplot.xticks(rotation=45)
+    pyplot.gca().yaxis.set_major_formatter(FuncFormatter(y_axis_formatter))  # apply formatter to y-axis
+    # this can also be called on 'ax'
+    pyplot.grid(True)
+    
+    # handles, labels = ax.get_legend_handles_labels()
+    quarters = thejson["quarterlyReports"]
+    dates = [Q['fiscalDateEnding'] for Q in quarters]
+    for K in WantedKeys[thejson["StatementType"]]:
+        ax.plot(dates, [Q[K] for Q in quarters], marker='o', linestyle='-', label=f"{K}")
+    ax.legend()
+    return figure
