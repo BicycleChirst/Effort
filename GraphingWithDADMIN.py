@@ -1,8 +1,6 @@
 import tkinter
-#from tkinter.constants import *
 from JSONwithDADMIN import *
 
-#from tkinter import filedialog
 from matplotlib import pyplot
 from matplotlib.ticker import FuncFormatter
 
@@ -13,9 +11,24 @@ tkWindow.minsize(960, 640)
 tkWindow.wm_title("-- Graphing With DADMIN --")
 # can't one-line the frame because the label and button need to reference it
 frame = tkinter.Frame(tkWindow, relief=tkinter.RIDGE, borderwidth=2)
-frame.pack(fill=tkinter.BOTH, expand=1)
+frame.pack(fill=tkinter.BOTH, expand=tkinter.NO)
 tkinter.Label(frame, text="GraphingWithDADMIN").pack(fill="x", expand=1)
 tkinter.Button(frame, text="Exit", command=tkWindow.destroy, name="exitbutton").pack(fill="none", side=tkinter.BOTTOM)
+
+# "extended" allows dragging to select a range of items, "multiple" does not
+# however, single-clicks will replace the current selection instead of adding to it
+ticker_listbox = tkinter.Listbox(tkWindow, selectmode="extended")
+ticker_listbox.pack(side=tkinter.LEFT, expand=tkinter.NO, fill="y", padx=5, pady=5)
+for T in sorted(StatementMap.keys()):
+    ticker_listbox.insert(tkinter.END, T)
+
+selected_keybox_dict = {}
+for K, L in StatementType_Keylist.items():
+    if K == "SPECIAL": continue
+    newbox = tkinter.Listbox(tkWindow, selectmode="extended")
+    newbox.pack(side=tkinter.LEFT, expand=tkinter.YES, fill="both", padx=5, pady=5)
+    for li in sorted(L):
+        newbox.insert(tkinter.END, li)
 
 
 # 'keyevent' gets passed implicitly
@@ -109,10 +122,11 @@ def PlotWantedKeys(thejson, figure=None):
 
 if __name__ == '__main__':
     #ButtonExperiment()
-    #tkWindow.mainloop()
-    userselection = LoadUserSelections()
-    newfig = None
-    for F in userselection:
-        newfig = PlotWantedKeys(F)
-    pyplot.show()
+    print(selected_keybox_dict)
+    tkWindow.mainloop()
+    #userselection = LoadUserSelections()
+    #newfig = None
+    #for F in userselection:
+    #    newfig = PlotWantedKeys(F)
+    #pyplot.show()
     print("window closed")
