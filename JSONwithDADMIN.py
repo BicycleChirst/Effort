@@ -1,6 +1,7 @@
 from EffortEngine import *
 
 InitializeEverything(printLoaded=True)
+InitializationCompleteFlag = True
 
 # TODO: RENAME THIS
 # fields of each reporting-period in the JSON-files of a given statement-type (AlphaVantage)

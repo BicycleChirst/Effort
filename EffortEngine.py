@@ -167,7 +167,8 @@ InitializationCompleteFlag = False
 def InitializeEverything(printLoaded=False, forceReloadAll=False, forceOverwrite=False, forceRedownload=False):
     global InitializationCompleteFlag
     if InitializationCompleteFlag: return
-    else: InitializationCompleteFlag = True
+    InitializationCompleteFlag = True
+    # ^ This isn't working?
     newdownloads = DownloadEverything(forceRedownload)
     newlyloaded = LoadAllFiles(forceReloadAll)
     movedfiles = MoveJsonFiles(forceOverwrite)
@@ -178,3 +179,4 @@ def InitializeEverything(printLoaded=False, forceReloadAll=False, forceOverwrite
 
 if __name__ == '__main__':
     InitializeEverything(printLoaded=True)
+    InitializationCompleteFlag = True
