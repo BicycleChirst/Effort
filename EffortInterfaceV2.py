@@ -11,10 +11,10 @@ from JSONwithDADMIN import *
 from FedGiveIt import get_series_data
 
 def retrieve_and_display_data():
-    import JSONwithDADMIN
     ticker = ticker_entry.get()  # Get the ticker from the entry field
     statement_type = statement_type_var.get()  # Get the selected statement type from the dropdown
-    JSONwithDADMIN.ReportingPeriod = report_type_var.get()
+    global ReportingPeriod
+    ReportingPeriod = report_type_var.get()
 
     # Download data if it doesn't exist already
     filename = ticker + "_" + statement_type

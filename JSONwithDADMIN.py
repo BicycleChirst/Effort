@@ -1,5 +1,7 @@
 from EffortEngine import *
 
+InitializeEverything(printLoaded=True)
+
 # TODO: RENAME THIS
 # fields of each reporting-period in the JSON-files of a given statement-type (AlphaVantage)
 StatementType_Keylist = {
@@ -64,7 +66,7 @@ WantedPercentages = {
 }
 
 KeyFormattingExcluded = ["fiscalDateEnding", "reportedCurrency"]
-ReportingPeriod = "annualReports"
+ReportingPeriod = "quarterlyReports"
 
 # this function converts all the fields in a JSON file
 # from "None" -> 0, and otherwise from string to float
