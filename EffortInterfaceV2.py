@@ -85,13 +85,13 @@ def on_key_type_select(event):
     Plotski.plot_key_var = key_var.get()
 
 def on_statement_type_select(event):
-    key_menu.set_menu(*StatementType_Keylist[statement_type_var.get()])
+    key_menu.set_menu(*Keytable[statement_type_var.get()])
     Plotski.plot_statementtype_var = statement_type_var.get()
 
 def ticker_selection():
     Plotski.plot_ticker_var = ticker_entry.get()
     multi_indecies = key_multiselect.curselection()
-    actual_keys = [StatementType_Keylist["INCOME_STATEMENT"][I] for I in multi_indecies]
+    actual_keys = [Keytable["INCOME_STATEMENT"][I] for I in multi_indecies]
     Plotski.plot_multiselect_keys = actual_keys
     print(key_multiselect.curselection())
     print(actual_keys)
@@ -134,13 +134,13 @@ key_var = tkinter.StringVar(financial_statement_frame)
 key_var.set("totalRevenue")  # Initial entry
 
 # Create a dropdown menu for key selection
-key_menu = tkinter.ttk.OptionMenu(financial_statement_frame, key_var, "ghostoption", *StatementType_Keylist["INCOME_STATEMENT"], command=on_key_type_select)
+key_menu = tkinter.ttk.OptionMenu(financial_statement_frame, key_var, "ghostoption", *Keytable["INCOME_STATEMENT"], command=on_key_type_select)
 key_menu.pack()
 
 key_multiselect = tkinter.Listbox(financial_statement_frame, selectmode="multiple")
 key_multiselect.pack(expand=tkinter.YES, fill="both")
 
-for K in StatementType_Keylist["INCOME_STATEMENT"]:
+for K in Keytable["INCOME_STATEMENT"]:
     key_multiselect.insert(tkinter.END, K)
 
 report_type_var = tkinter.StringVar(financial_statement_frame)

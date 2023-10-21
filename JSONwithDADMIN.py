@@ -3,9 +3,8 @@ from EffortEngine import *
 InitializeEverything(printLoaded=True)
 InitializationCompleteFlag = True
 
-# TODO: RENAME THIS
 # fields of each reporting-period in the JSON-files of a given statement-type (AlphaVantage)
-StatementType_Keylist = {
+Keytable = {
     "SPECIAL": {'fiscalDateEnding', 'reportedCurrency'},  # these keys are present in every StatementType
     # the 'special' keys are non-numerical; exclude them from formatting and conversions.
     # the 'special' keys are omitted from the following lists

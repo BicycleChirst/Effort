@@ -43,7 +43,7 @@ tkinter.Button(tickerbox_frame, text="print ticker selections", command=tickerbo
 CallbackList.append(tickerbox_callback)
 
 keybox_selections = {}
-for (K, L) in StatementType_Keylist.items():
+for (K, L) in Keytable.items():
     if K == "SPECIAL": continue
     newframe = tkinter.LabelFrame(tkWindow, text=f"{K}")
     newframe.pack(fill="both", expand=tkinter.YES, side=tkinter.LEFT, padx=5, pady=5)
